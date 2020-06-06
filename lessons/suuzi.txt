@@ -1,0 +1,8 @@
+:title 数字(１２３４５６７８９０)
+:zenkaku
+:text
+１２３４５　１２３４５　６７８９０　６７８９０
+:keyboard
+:start
+:show_score
+:next

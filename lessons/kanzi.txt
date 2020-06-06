@@ -1,0 +1,15 @@
+:title カタカナと漢字
+:text
+カタカナと￹漢字￺かんじ￻
+<kbd> 1 </kbd> １￹年生￺ねんせい￻            <kbd> 6 </kbd> ６￹年生￺ねんせい￻
+<kbd> 2 </kbd> ２￹年生￺ねんせい￻
+<kbd> 3 </kbd> ３￹年生￺ねんせい￻
+<kbd> 4 </kbd> ４￹年生￺ねんせい￻
+<kbd> 5 </kbd> ５￹年生￺ねんせい￻
+:hint
+￹練習￺れんしゅう￻する￹項目￺こうもく￻の￹番号￺ばんごう￻のキーをおしてください。
+
+<kbd>Esc</kbd> はじめにもどる
+<kbd>F1</kbd> ヘルプ
+<kbd>F5</kbd> グラフをみる
+:menu kanzi1.txt kanzi2.txt kanzi3.txt kanzi4.txt kanzi5.txt kanzi6.txt

@@ -1,0 +1,7 @@
+:title 「たちつてと」(tatituteto)
+:text
+たちつてと　たちつてと　だぢづでど　だぢづでど
+:keyboard
+:start
+:show_score
+:next

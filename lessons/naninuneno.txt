@@ -1,0 +1,7 @@
+:title 「なにぬねの」(naninuneno)
+:text
+なにぬねの　なにぬねの　なにぬねの
+:keyboard
+:start
+:show_score
+:next

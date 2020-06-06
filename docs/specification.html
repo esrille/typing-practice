@@ -1,0 +1,105 @@
+<!doctype html>
+<html lang='ja'>
+<head>
+<meta charset='UTF-8'>
+<meta name='viewport' content='width=device-width, maximum-scale=1.0, user-scalable=yes'>
+<title>テキストのかきかた ― タイピングの練習</title>
+<link href='icon.png' rel='icon'>
+<link rel='stylesheet' type='text/css' href='default.css'>
+<meta content='テキストのかきかた' name='description'>
+<meta content='https://esrille.github.io/typing-practice/specification.html' property='og:url'>
+<meta content='テキストのかきかた ― タイピングの練習' property='og:title'>
+<meta content='テキストのかきかた' property='og:description'>
+<meta content='https://esrille.github.io/ibus-hiragana/screenshot.png' property='og:image'>
+<meta content='product' property='og:type'>
+<meta content='summary_large_image' name='twitter:card'>
+<meta content='@esrille' name='twitter:creator'>
+<style>
+aside a:hover {
+  text-decoration: none;
+}
+.title {
+  font-size: 20pt;
+}
+</style>
+</head>
+<body>
+<div id='sidebar'>
+<aside>
+<a class='title' href='https://github.com/esrille/typing-practice'><img alt="アイコン" src="icon.png"><br>
+タイピングの<ruby>練習<rp>(</rp><rt>れんしゅう</rt><rp>)</rp></ruby></a>
+<hr>
+<ul>
+<li><a href='index.html'>はじめに</a>
+<li><a href='install.html'>インストール<ruby>方法<rp>(</rp><rt>ほうほう</rt><rp>)</rp></ruby></a>
+<li><a href='usage.html'>つかいかた</a>
+<li><a href='hiragana_ime.html'>「ひらがなIME」との<ruby>連動<rp>(</rp><rt>れんどう</rt><rp>)</rp></ruby></a>
+<li><a href='specification.html'>テキストのかきかた</a>
+</ul>
+<footer>
+</footer>
+</aside>
+</div>
+<main>
+<h1>テキストのかきかた</h1>
+<p>&#x3000;「タイピングの<ruby>練習<rp>(</rp><rt>れんしゅう</rt><rp>)</rp></ruby>」のテキストは、かんたんな<ruby>命令<rp>(</rp><rt>めいれい</rt><rp>)</rp></ruby>をふくんだテキストファイルで<ruby>構成<rp>(</rp><rt>こうせい</rt><rp>)</rp></ruby>されています。</p>
+<p>&#x3000;テキストのファイルのなかでは、つぎの<ruby>表<rp>(</rp><rt>ひょう</rt><rp>)</rp></ruby>のような<ruby>命令<rp>(</rp><rt>めいれい</rt><rp>)</rp></ruby>をつかうことができます。</p>
+<table>
+<thead>
+<tr>
+<th><ruby>命令<rp>(</rp><rt>めいれい</rt><rp>)</rp></ruby></th>
+<th><ruby>説明<rp>(</rp><rt>せつめい</rt><rp>)</rp></ruby></th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>:title [タイトル]</td>
+<td>テキストのタイトルを<ruby>指定<rp>(</rp><rt>してい</rt><rp>)</rp></ruby>します。</td>
+</tr>
+<tr>
+<td>:text</td>
+<td>つぎの<ruby>行<rp>(</rp><rt>ぎょう</rt><rp>)</rp></ruby>から、メニューのテキストや<ruby>練習<rp>(</rp><rt>れんしゅう</rt><rp>)</rp></ruby>するテキストをかきます。</td>
+</tr>
+<tr>
+<td>:hint</td>
+<td>つぎの<ruby>行<rp>(</rp><rt>ぎょう</rt><rp>)</rp></ruby>から、<ruby>画面<rp>(</rp><rt>がめん</rt><rp>)</rp></ruby>ひだりがわに<ruby>表示<rp>(</rp><rt>ひょうじ</rt><rp>)</rp></ruby>するヒントをかきます。</td>
+</tr>
+<tr>
+<td>:keyboard</td>
+<td><ruby>練習<rp>(</rp><rt>れんしゅう</rt><rp>)</rp></ruby><ruby>画面<rp>(</rp><rt>がめん</rt><rp>)</rp></ruby>にキーボードを<ruby>表示<rp>(</rp><rt>ひょうじ</rt><rp>)</rp></ruby>するようにします。</td>
+</tr>
+<tr>
+<td>:start</td>
+<td><ruby>練習<rp>(</rp><rt>れんしゅう</rt><rp>)</rp></ruby><ruby>画面<rp>(</rp><rt>がめん</rt><rp>)</rp></ruby>を<ruby>開始<rp>(</rp><rt>かいし</rt><rp>)</rp></ruby>します。</td>
+</tr>
+<tr>
+<td>:show_score</td>
+<td><ruby>練習<rp>(</rp><rt>れんしゅう</rt><rp>)</rp></ruby><ruby>結果<rp>(</rp><rt>けっか</rt><rp>)</rp></ruby><ruby>画面<rp>(</rp><rt>がめん</rt><rp>)</rp></ruby>を<ruby>開始<rp>(</rp><rt>かいし</rt><rp>)</rp></ruby>します。</td>
+</tr>
+<tr>
+<td>:up</td>
+<td>メニュー<ruby>画面<rp>(</rp><rt>がめん</rt><rp>)</rp></ruby>にもどります。</td>
+</tr>
+<tr>
+<td>:next</td>
+<td>つぎの<ruby>練習<rp>(</rp><rt>れんしゅう</rt><rp>)</rp></ruby>テキストにすすみます。</td>
+</tr>
+<tr>
+<td>:menu [ファイル<ruby>名<rp>(</rp><rt>めい</rt><rp>)</rp></ruby>]...</td>
+<td>メニュー<ruby>画面<rp>(</rp><rt>がめん</rt><rp>)</rp></ruby>からジャンプするテキストのファイル<ruby>名<rp>(</rp><rt>めい</rt><rp>)</rp></ruby>を<ruby>指定<rp>(</rp><rt>してい</rt><rp>)</rp></ruby>します。</td>
+</tr>
+<tr>
+<td>:zenkaku</td>
+<td><ruby>半角<rp>(</rp><rt>はんかく</rt><rp>)</rp></ruby>で<ruby>入力<rp>(</rp><rt>にゅうりょく</rt><rp>)</rp></ruby>した<ruby>文字<rp>(</rp><rt>もじ</rt><rp>)</rp></ruby>（アラビア<ruby>数字<rp>(</rp><rt>すうじ</rt><rp>)</rp></ruby>など）も<ruby>全角<rp>(</rp><rt>ぜんかく</rt><rp>)</rp></ruby>とみなして<ruby>評価<rp>(</rp><rt>ひょうか</rt><rp>)</rp></ruby>するようにします。</td>
+</tr>
+</tbody>
+</table>
+<p>&#x3000;ヒントや<ruby>練習<rp>(</rp><rt>れんしゅう</rt><rp>)</rp></ruby>するテキストにはルビをふっておくことができます。ルビは、ユニコードのルビ<ruby>用<rp>(</rp><rt>よう</rt><rp>)</rp></ruby>のコードポイントU+FFF9からU+FFFBに<ruby>対応<rp>(</rp><rt>たいおう</rt><rp>)</rp></ruby>しています。「<a href="https://github.com/esrille/furiganapad">ふりがなパッド</a>」をつかうと、ルビのついたテキストをかんたんにかくことができます。</p>
+<p>&#x3000;ヒントやメニューのテキストのなかでは、「<a href="https://developer.gnome.org/pygtk/stable/pango-markup-language.html">Pangoマークアップ<ruby>言語<rp>(</rp><rt>げんご</rt><rp>)</rp></ruby></a>」をつかうことができます。くわえて、テキストでは、キーボードのキーをあらわすための&lt;kbd&gt;タグをつかうことができます。</p>
+</main>
+<nav>
+<a href=hiragana_ime.html id='nav-prev'><div>&lt;</div></a>
+<a href=index.html id='nav-next'><div>&gt;</div></a>
+</nav>
+</body>
+</html>

@@ -1,0 +1,15 @@
+:title いろいろな音と記号
+:text
+いろいろな￹音￺おん￻と￹記号￺きごう￻
+<kbd> 1 </kbd> つまる￹音￺おん￻(っ)　           <kbd> 6 </kbd> かぎかっこ(「 」)
+<kbd> 2 </kbd> ねじれる￹音￺おん￻(ゃゅょ)       <kbd> 7 </kbd> ￹数字￺すうじ￻(１２３４５６７８９０)
+<kbd> 3 </kbd> のばす￹音￺おん￻(ー)
+<kbd> 4 </kbd> はねる￹音￺おん￻(ん)
+<kbd> 5 </kbd> テン(、)とマル(。)
+:hint
+￹練習￺れんしゅう￻する￹項目￺こうもく￻の￹番号￺ばんごう￻のキーをおしてください。
+
+<kbd>Esc</kbd> はじめにもどる
+<kbd>F1</kbd> ヘルプ
+<kbd>F5</kbd> グラフをみる
+:menu xtu.txt xyaxyuxyo.txt tyouon.txt n.txt kutouten.txt kakko.txt suuzi.txt

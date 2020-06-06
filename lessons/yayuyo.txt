@@ -1,0 +1,7 @@
+:title 「やゆよ」(yayuyo)
+:text
+やゆよ　やゆよ　やゆよ　やゆよ　やゆよ
+:keyboard
+:start
+:show_score
+:next

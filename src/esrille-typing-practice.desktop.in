@@ -1,0 +1,10 @@
+[Desktop Entry]
+Name=Typing Practice
+Name[ja]=タイピングの練習
+Comment=Practice typing lessons.
+Comment[ja]=キーボードをつかって、タイピングの練習をします。
+Exec=esrille-typing-practice
+Icon=esrille-typing-practice
+Terminal=false
+Type=Application
+Categories=Education

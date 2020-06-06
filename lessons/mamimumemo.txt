@@ -1,0 +1,7 @@
+:title 「まみむめも」(mamimumemo)
+:text
+まみむめも　まみむめも　まみむめも
+:keyboard
+:start
+:show_score
+:next

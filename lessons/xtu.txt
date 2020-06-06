@@ -1,0 +1,7 @@
+:title 「っ」(っ)
+:text
+にっか　ひっし　みっつ　かって　いっぽ
+:keyboard
+:start
+:show_score
+:next

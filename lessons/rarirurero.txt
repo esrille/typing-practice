@@ -1,0 +1,7 @@
+:title 「らりるれろ」(rarirurero)
+:text
+らりるれろ　らりるれろ　らりるれろ
+:keyboard
+:start
+:show_score
+:next

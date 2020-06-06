@@ -1,0 +1,7 @@
+:title 「さしすせそ」(sasisuseso)
+:text
+さしすせそ　さしすせそ　ざじずぜぞ　ざじずぜぞ
+:keyboard
+:start
+:show_score
+:next

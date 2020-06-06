@@ -1,0 +1,8 @@
+:title 「ゃゅょ」(yayuyo)
+:text
+きゃしゃちゃ　にゅひゅみゅ　りょぎょじょ　ちょっと
+:keyboard
+:start
+:show_score
+:next
+

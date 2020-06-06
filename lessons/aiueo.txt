@@ -1,0 +1,7 @@
+:title 「あいうえお」(aiueo)
+:text
+あいうえお　あいうえお　あいうえお
+:keyboard
+:start
+:show_score
+:next

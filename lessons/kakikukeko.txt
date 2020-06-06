@@ -1,0 +1,8 @@
+:title 「かきくけこ」(kakikukeko)
+:text
+かきくけこ　かきくけこ　がぎぐげご　がぎぐげご
+:keyboard
+:start
+:show_score
+:next
+

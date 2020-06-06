@@ -1,0 +1,7 @@
+:title 「はひふへほ」(hahihuheho)
+:text
+はひふへほ　はひふへほ　ばびぶべぼ　ばびぶべぼ　ぱぴぷぺぽ
+:keyboard
+:start
+:show_score
+:next

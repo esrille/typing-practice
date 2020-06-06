@@ -1,0 +1,15 @@
+:title ５０音の練習
+:text
+５０￹音￺おん￻の￹練習￺れんしゅう￻
+<kbd> 1 </kbd> あいうえお　　　　<kbd> 6 </kbd> はひふへほ
+<kbd> 2 </kbd> かきくけこ　　　　<kbd> 7 </kbd> まみむめも
+<kbd> 3 </kbd> さしすせそ　　　　<kbd> 8 </kbd> や　ゆ　よ
+<kbd> 4 </kbd> たちつてと　　　　<kbd> 9 </kbd> らりるれろ
+<kbd> 5 </kbd> なにぬねの　　　　<kbd> 0 </kbd> わ　　　を
+:hint
+￹練習￺れんしゅう￻する￹項目￺こうもく￻の￹番号￺ばんごう￻のキーをおしてください。
+
+<kbd>Esc</kbd> はじめにもどる
+<kbd>F1</kbd> ヘルプ
+<kbd>F5</kbd> グラフをみる
+:menu aiueo.txt kakikukeko.txt sasisuseso.txt tatituteto.txt naninuneno.txt hahihuheho.txt mamimumemo.txt yayuyo.txt rarirurero.txt wawo.txt
