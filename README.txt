@@ -7,7 +7,7 @@
 
 ## ￹資料￺しりょう￻
 
-　つかいかたについては、「タイピングの￹練習￺れんしゅう￻の￹手￺て￻びき」の￹手￺て￻びきをみてください。
+　つかいかたについては、「タイピングの￹練習￺れんしゅう￻の￹手￺て￻びき」をみてください。
 
 - [タイピングの￹練習￺れんしゅう￻の￹手￺て￻びき](https://esrille.github.io/typing-practice/)
 - [タイピングの￹練習￺れんしゅう￻の￹開発￺かいはつ￻について](https://github.com/esrille/typing-practice/blob/master/CONTRIBUTING.md)

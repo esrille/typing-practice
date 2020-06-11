@@ -7,7 +7,7 @@
 
 ## <ruby>資料<rp>(</rp><rt>しりょう</rt><rp>)</rp></ruby>
 
-　つかいかたについては、「タイピングの<ruby>練習<rp>(</rp><rt>れんしゅう</rt><rp>)</rp></ruby>の<ruby>手<rp>(</rp><rt>て</rt><rp>)</rp></ruby>びき」の<ruby>手<rp>(</rp><rt>て</rt><rp>)</rp></ruby>びきをみてください。
+　つかいかたについては、「タイピングの<ruby>練習<rp>(</rp><rt>れんしゅう</rt><rp>)</rp></ruby>の<ruby>手<rp>(</rp><rt>て</rt><rp>)</rp></ruby>びき」をみてください。
 
 - [タイピングの<ruby>練習<rp>(</rp><rt>れんしゅう</rt><rp>)</rp></ruby>の<ruby>手<rp>(</rp><rt>て</rt><rp>)</rp></ruby>びき](https://esrille.github.io/typing-practice/)
 - [タイピングの<ruby>練習<rp>(</rp><rt>れんしゅう</rt><rp>)</rp></ruby>の<ruby>開発<rp>(</rp><rt>かいはつ</rt><rp>)</rp></ruby>について](https://github.com/esrille/typing-practice/blob/master/CONTRIBUTING.md)
