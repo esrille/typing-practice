@@ -260,7 +260,7 @@ class Keyboard:
             ctx.move_to(x + (w - ext[4]) / 2, y + (h + ext[3]) / 2)
             ctx.save()
             ctx.set_source_rgb(255, 255, 255)
-            ctx.show_text(legend)
+            ctx.show_text(legend.upper())
             ctx.restore()
 
     def get_kana(self, s):
