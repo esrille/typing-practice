@@ -32,7 +32,7 @@ EXTRA_DIST = \
 	@PACKAGE_NAME@.spec.in \
 	CONTRIBUTING.md \
 	LICENSE \
-	NOTICE\
+	NOTICE \
 	README.md \
 	README.txt \
 	$(NULL)
