@@ -64,13 +64,13 @@ class Chart:
         if step_x <= 0:
             step_x = self.width
         y = 0
-        while y <= self.height + step_y / 2:
+        while y <= self.height + 1:
             self.ctx.move_to(0, y)
             self.ctx.rel_line_to(self.width, 0)
             self.ctx.stroke()
             y += step_y
         x = 0
-        while x <= self.width + step_x / 2:
+        while x <= self.width + 1:
             self.ctx.move_to(x, 0)
             self.ctx.rel_line_to(0, self.height)
             self.ctx.stroke()
