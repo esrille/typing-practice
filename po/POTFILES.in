@@ -1,7 +1,10 @@
+src/application.py
 src/chart.py
 src/engine.py
 src/hurigana.py
+src/ime.py
 src/keyboard.py
 src/main.py
 src/roomazi.py
+src/window.py
 src/menu.ui

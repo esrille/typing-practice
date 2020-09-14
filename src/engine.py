@@ -32,9 +32,9 @@ from gi.repository import Gtk, Gdk, GLib, GObject, Pango, PangoCairo
 
 logger = logging.getLogger(__name__)
 
-DELAY_FINISH = 1.0  # [seconds]
+DELAY_FINISH = 1.0    # [seconds]
 MAX_STATS_DAYS = 366 / 2
-TIME_OVER = 59 * 60 # [seconds]
+TIME_OVER = 59 * 60   # [seconds]
 
 ZENKAKU = ''.join(chr(i) for i in range(0xff01, 0xff5f)) + '　￥'
 HANKAKU = ''.join(chr(i) for i in range(0x21, 0x7f)) + ' ¥'

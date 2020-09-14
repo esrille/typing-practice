@@ -13,6 +13,7 @@
 # limitations under the License.
 
 typing_practice_PYTHON = \
+	application.py \
 	chart.py \
 	engine.py \
 	hurigana.py \
@@ -20,6 +21,7 @@ typing_practice_PYTHON = \
 	keyboard.py \
 	roomazi.py \
 	main.py \
+	window.py \
 	menu.ui \
 	$(NULL)
 BUILT_SOURCES = package.py

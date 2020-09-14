@@ -14,19 +14,15 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-from engine import to_zenkaku, to_hankaku
 from roomazi import Roomazi
 
 import cairo
 import json
 import logging
-import os
 import math
-import sys
 
 from gi import require_version
-require_version('IBus', '1.0')
-from gi.repository import Gtk, Gdk, IBus, Gio
+from gi.repository import Gdk, Gio
 
 
 logger = logging.getLogger(__name__)
