@@ -30,6 +30,7 @@ from gi.repository import Gtk, Gdk, Pango, PangoCairo
 from chart import Chart
 from engine import Engine, EngineMode, Stats
 from hurigana import HuriganaLayout
+import ime
 from keyboard import Keyboard
 from roomazi import Roomazi
 
@@ -113,11 +114,13 @@ class View(Gtk.DrawingArea):
         return self.engine
 
     def on_focus_in(self, wid, event):
+        ime.check_engine()
         self.im_context.focus_in()
         return True
 
     def on_focus_out(self, wid, event):
         self.im_context.focus_out()
+        ime.restore_engine()
         return True
 
     def on_key_press(self, wid, event):

@@ -16,6 +16,7 @@ typing_practice_PYTHON = \
 	chart.py \
 	engine.py \
 	hurigana.py \
+	ime.py \
 	keyboard.py \
 	roomazi.py \
 	main.py \
