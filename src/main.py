@@ -494,6 +494,7 @@ class TypingWindow(Gtk.ApplicationWindow):
 
     def __init__(self, filename='', *args, **kwargs):
         super().__init__(*args, **kwargs)
+        self.set_default_icon_name(package.get_name())
 
         self.headerbar = Gtk.HeaderBar()
         self.headerbar.set_show_close_button(True)
