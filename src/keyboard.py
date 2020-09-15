@@ -110,6 +110,7 @@ class Keyboard:
             self.layout = Keyboard.LAYOUT_109
         else:
             self.layout = Keyboard.LAYOUT_104
+        self.roomazi_layout = list()
         self.kana_layout = list()
         self.kogaki = KOGAKI
         self.ignore = [Gdk.KEY_VoidSymbol]
@@ -148,7 +149,7 @@ class Keyboard:
                         row.append((c[0], n, s))
                         index += 1
                     layout.append(row)
-                self.layout = layout
+                self.roomazi_layout = layout
         except:
             logger.error('Could not load:', path)
 
@@ -281,12 +282,15 @@ class Keyboard:
 
     def draw(self, ctx: cairo.Context, x, y, next: str):
         self.load_keyboard_layout()
-        if self.is_roomazi():
+        if next and next[0].isascii():
+            self.draw_with_hint(ctx, x, y, self.layout, next[0])
+            pair = (next[0], next[0])
+        elif self.is_roomazi():
             pair = self.roomazi.get_roomazi(next)
             hint = pair[1]
             if '\u3000' in hint:
                 hint = hint.replace('\u3000', ' ')
-            self.draw_with_hint(ctx, x, y, self.layout, hint)
+            self.draw_with_hint(ctx, x, y, self.roomazi_layout, hint)
         else:
             pair = self.get_kana(next)
             self.draw_with_hint(ctx, x, y, self.kana_layout, pair[1])

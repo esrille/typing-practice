@@ -1,0 +1,12 @@
+:title 英語
+:text
+￹英語￺えいご￻
+<kbd> 1 </kbd> ３￹年生￺ねんせい￻
+<kbd> 2 </kbd> ４￹年生￺ねんせい￻
+:hint
+￹練習￺れんしゅう￻する￹項目￺こうもく￻の￹番号￺ばんごう￻のキーをおしてください。
+
+<kbd>Esc</kbd> はじめにもどる
+<kbd>F1</kbd> ヘルプ
+<kbd>F5</kbd> グラフをみる
+:menu english3.txt english4.txt

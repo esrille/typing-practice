@@ -142,7 +142,7 @@ class View(Gtk.DrawingArea):
             self.queue_draw()
             return True
         if event.keyval == Gdk.KEY_Return:
-            self.engine.enter()
+            self.engine.enter(self.keyboard)
             self.queue_draw()
             return True
         if event.keyval == Gdk.KEY_F5:

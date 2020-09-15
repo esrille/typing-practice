@@ -12,7 +12,7 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-lessons_DATA = \
+dist_lessons_DATA = \
 	menu.txt \
 	gozyuuon.txt \
 	aiueo.txt \
@@ -40,39 +40,12 @@ lessons_DATA = \
 	kanzi4.txt \
 	kanzi5.txt \
 	kanzi6.txt \
+	english.txt \
+	english3.txt \
+	english4.txt \
 	$(NULL)
 
 lessonsdir = $(pkgdatadir)/lessons
-
-EXTRA_DIST = \
-	menu.txt \
-	gozyuuon.txt \
-	aiueo.txt \
-	kakikukeko.txt \
-	sasisuseso.txt \
-	tatituteto.txt \
-	naninuneno.txt \
-	hahihuheho.txt \
-	mamimumemo.txt \
-	yayuyo.txt \
-	rarirurero.txt \
-	wawo.txt \
-	misc.txt \
-	xtu.txt \
-	xyaxyuxyo.txt \
-	tyouon.txt \
-	n.txt \
-	kutouten.txt \
-	kakko.txt \
-	suuzi.txt \
-	kanzi.txt \
-	kanzi1.txt \
-	kanzi2.txt \
-	kanzi3.txt \
-	kanzi4.txt \
-	kanzi5.txt \
-	kanzi6.txt \
-	$(NULL)
 
 uninstall-hook:
 	-rmdir $(lessonsdir)

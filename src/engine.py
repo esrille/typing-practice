@@ -28,6 +28,7 @@ from datetime import date, datetime
 from enum import Enum
 import logging
 import os
+import random
 import time
 
 import ime
@@ -191,6 +192,8 @@ class Engine:
         self.plain = ''
         self.hint = ''
         self.correct_count = 0
+        self.repeat = 0
+        self.ramdom_list = list()
         self.mode = EngineMode.RUN
         self.show_keyboard = False
         self.reset_practice()
@@ -267,9 +270,25 @@ class Engine:
         logger.info("up: %s", filename)
         return
 
-    def finish_practice(self):
+    def finish_practice(self, keyboard):
         self.stats.append(self)
-        self.mode = EngineMode.RUN
+        if self.repeat == 0:
+            self.mode = EngineMode.RUN
+            return True
+        self.reset_practice()
+        self.pick_text(keyboard)
+        return False
+
+    def pick_text(self, keyboard):
+        self.text = ''
+        while 0 < self.repeat:
+            self.text += self.ramdom_list.pop(random.randrange(0, len(self.ramdom_list)))
+            self.text += ' '
+            self.repeat -= 1
+        self.text = self.text.strip()
+        self.plain, self.reading = get_plain_text(self.text)
+        self.correct_count = keyboard.get_key_count(self.reading)
+        self.repeat = 0
 
     def run(self, keyboard):
         if not self.lines:
@@ -280,7 +299,8 @@ class Engine:
                 return False
             if not self.is_finished():
                 return False
-            self.finish_practice()
+            if not self.finish_practice(keyboard):
+                return False
         text = ''
         while self.mode in (EngineMode.RUN, EngineMode.TEXT, EngineMode.HINT):
             if len(self.lines) <= self.lineno:
@@ -317,6 +337,17 @@ class Engine:
                 ime.set_mode(self.ime_mode)
             elif line.startswith(":keyboard"):
                 self.show_keyboard = True
+            elif line.startswith(":random"):
+                n = line[len(":random"):].strip()
+                self.ramdom_list = self.text.splitlines(False)
+                if n:
+                    self.repeat = min(max(1, int(n)), len(self.ramdom_list))
+                else:
+                    self.repeat = len(self.ramdom_list)
+                self.pick_text(keyboard)
+                self.reset_practice()
+                self.mode = EngineMode.PRACTICE
+                return True
             elif line.startswith(":start"):
                 self.reset_practice()
                 self.mode = EngineMode.PRACTICE
@@ -452,12 +483,12 @@ class Engine:
         else:
             self.up()
 
-    def enter(self):
+    def enter(self, keyboard):
         if self.mode in (EngineMode.SCORE, EngineMode.STATS):
             self.mode = EngineMode.RUN
         elif self.mode == EngineMode.PRACTICE:
             if self.is_finished(no_wait=True):
-                self.finish_practice()
+                self.finish_practice(keyboard)
                 return
             was_empty = self.is_empty()
             self.typed += '\n'
