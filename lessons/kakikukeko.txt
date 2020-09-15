@@ -1,6 +1,7 @@
 :title 「かきくけこ」(kakikukeko)
 :text
 かきくけこ　かきくけこ　がぎぐげご　がぎぐげご
+:ime_mode あ
 :keyboard
 :start
 :show_score

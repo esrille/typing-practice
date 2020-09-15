@@ -1,6 +1,7 @@
 :title 「っ」(っ)
 :text
 にっか　ひっし　みっつ　かって　いっぽ
+:ime_mode あ
 :keyboard
 :start
 :show_score

@@ -17,18 +17,20 @@
 from hurigana import get_plain_text
 import package
 
+import gi
+gi.require_version('Gtk', '3.0')
+gi.require_version('Pango', '1.0')
+gi.require_version('PangoCairo', '1.0')
+from gi.repository import Gdk
+
 import operator
 from datetime import date, datetime
 from enum import Enum
 import logging
 import os
-import sys
 import time
-import gi
-gi.require_version('Gtk', '3.0')
-gi.require_version('Pango', '1.0')
-gi.require_version('PangoCairo', '1.0')
-from gi.repository import Gtk, Gdk, GLib, GObject, Pango, PangoCairo
+
+import ime
 
 logger = logging.getLogger(__name__)
 
@@ -178,6 +180,7 @@ class Stats:
 class Engine:
     def __init__(self, roomazi):
         self.roomazi = roomazi
+        self.ime_mode = 'A'
         self.dirname = ''
         self.filename = ''
         self.lines = list()
@@ -309,6 +312,9 @@ class Engine:
             elif line.startswith(":hint"):
                 self.mode = EngineMode.HINT
                 self.hint = ''
+            elif line.startswith(":ime_mode"):
+                self.ime_mode = line[len(":ime_mode"):].strip()
+                ime.set_mode(self.ime_mode)
             elif line.startswith(":keyboard"):
                 self.show_keyboard = True
             elif line.startswith(":start"):
@@ -361,6 +367,9 @@ class Engine:
 
     def get_hint(self):
         return self.hint
+
+    def get_ime_mode(self):
+        return self.ime_mode
 
     def get_typed(self):
         return self.typed

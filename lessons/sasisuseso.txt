@@ -1,6 +1,7 @@
 :title 「さしすせそ」(sasisuseso)
 :text
 さしすせそ　さしすせそ　ざじずぜぞ　ざじずぜぞ
+:ime_mode あ
 :keyboard
 :start
 :show_score

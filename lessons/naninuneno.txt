@@ -1,6 +1,7 @@
 :title 「なにぬねの」(naninuneno)
 :text
 なにぬねの　なにぬねの　なにぬねの
+:ime_mode あ
 :keyboard
 :start
 :show_score

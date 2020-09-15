@@ -1,6 +1,7 @@
 :title 「はひふへほ」(hahihuheho)
 :text
 はひふへほ　はひふへほ　ばびぶべぼ　ばびぶべぼ　ぱぴぷぺぽ
+:ime_mode あ
 :keyboard
 :start
 :show_score

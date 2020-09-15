@@ -108,6 +108,7 @@ class View(Gtk.DrawingArea):
 
     def on_focus_in(self, wid, event):
         ime.check_engine()
+        ime.set_mode(self.get_engine().get_ime_mode())
         self.im_context.focus_in()
         return True
 

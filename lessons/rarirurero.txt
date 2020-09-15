@@ -1,6 +1,7 @@
 :title 「らりるれろ」(rarirurero)
 :text
 らりるれろ　らりるれろ　らりるれろ
+:ime_mode あ
 :keyboard
 :start
 :show_score

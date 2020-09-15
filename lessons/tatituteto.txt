@@ -1,6 +1,7 @@
 :title 「たちつてと」(tatituteto)
 :text
 たちつてと　たちつてと　だぢづでど　だぢづでど
+:ime_mode あ
 :keyboard
 :start
 :show_score

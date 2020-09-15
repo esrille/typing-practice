@@ -1,6 +1,7 @@
 :title ２年生の漢字
 :text
 お￹店￺みせ￻でお￹米￺こめ￻をかいました。ゆうごはんは、なにかな。
+:ime_mode あ
 :start
 :show_score
 :next

@@ -1,6 +1,7 @@
 :title 「わを」(わを)
 :text
 わを　わを　わを　わを　わを
+:ime_mode あ
 :keyboard
 :start
 :show_score

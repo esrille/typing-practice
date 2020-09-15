@@ -1,6 +1,7 @@
 :title 「まみむめも」(mamimumemo)
 :text
 まみむめも　まみむめも　まみむめも
+:ime_mode あ
 :keyboard
 :start
 :show_score

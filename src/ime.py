@@ -18,11 +18,12 @@ import logging
 
 from gi import require_version
 require_version('IBus', '1.0')
-from gi.repository import IBus
+from gi.repository import Gio, IBus
 
+
+HIRAGANA_IME_KEY = 'org.freedesktop.ibus.engine.hiragana'
 
 logger = logging.getLogger(__name__)
-
 default_engine = ''
 
 
@@ -50,3 +51,11 @@ def restore_engine():
         bus.set_global_engine(default_engine)
     except Exception as e:
         logger.error(str(e))
+
+
+def set_mode(mode):
+    source = Gio.SettingsSchemaSource.get_default()
+    if source.lookup(HIRAGANA_IME_KEY, True):
+        config = Gio.Settings.new(HIRAGANA_IME_KEY)
+        config.set_string('mode', 'A' if mode != 'A' else 'あ')
+        config.set_string('mode', mode)

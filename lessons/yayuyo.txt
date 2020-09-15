@@ -1,6 +1,7 @@
 :title 「やゆよ」(yayuyo)
 :text
 やゆよ　やゆよ　やゆよ　やゆよ　やゆよ
+:ime_mode あ
 :keyboard
 :start
 :show_score
