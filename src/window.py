@@ -260,25 +260,28 @@ class View(Gtk.DrawingArea):
         y += LINE_HEIGHT
         typed = get_prefix(self.engine.get_plain(), self.engine.get_typed())
         correct_length = len(typed)
-        typed = '<span foreground="#0066CC">' + typed + '</span>'
+        typed = hurigana.adjust_typed(typed)
+        formatted = '<span foreground="#0066CC">' + typed + '</span>'
         if correct_length < len(self.engine.get_typed()):
-            typed += '<span foreground="#FF0000" background="#FFCCFF">' + \
+            formatted += '<span foreground="#FF0000" background="#FFCCFF">' + \
                      self.engine.get_typed()[correct_length:] + \
                      '</span>'
         preedit = self.engine.get_preedit()
         if preedit[0]:
-            typed += '<span foreground="#0066FF">' + preedit[0][:preedit[2]] + '</span>'
+            formatted += '<span foreground="#0066FF">' + preedit[0][:preedit[2]] + '</span>'
         layout = PangoCairo.create_layout(ctx)
         layout.set_font_description(desc)
         layout.set_width(WIDTH * Pango.SCALE)
         layout.set_spacing(PRACTICE_LINE_SPACING * Pango.SCALE)
-        layout.set_markup(typed, -1)
+        layout.set_markup(formatted, -1)
         ctx.move_to(x, y)
         PangoCairo.update_layout(ctx, layout)
         PangoCairo.show_layout(ctx, layout)
 
         # Draw caret
-        current = self.engine.get_typed()
+        current = typed
+        if correct_length < len(self.engine.get_typed()):
+            current += self.engine.get_typed()[correct_length:]
         if preedit[0]:
             current += preedit[0][:preedit[2]]
         ctx.move_to(x, y)

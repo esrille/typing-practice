@@ -221,3 +221,21 @@ class HuriganaLayout:
         PangoCairo.update_layout(self.ctx, self.layout)
         PangoCairo.show_layout(self.ctx, self.layout)
         self._draw_rubies(x, y)
+
+    def adjust_typed(self, typed):
+        current = 0
+        length = len(typed)
+        if length < len(self.plain):
+            length += 1
+        adjusted = ''
+        for i in range(length):
+            index = len(self.plain[:i].encode())
+            (line, x) = self.layout.index_to_line_x(index, False)
+            if line != current and adjusted[-1] != '\n':
+                adjusted += '\n' + self.plain[i]
+            else:
+                adjusted += self.plain[i]
+            current = line
+        if len(typed) < len(self.plain):
+            adjusted = adjusted[:-1]
+        return adjusted
