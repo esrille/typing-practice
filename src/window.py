@@ -489,6 +489,7 @@ class TypingWindow(Gtk.ApplicationWindow):
     def __init__(self, filename='', *args, **kwargs):
         super().__init__(*args, **kwargs)
         self.set_default_icon_name(package.get_name())
+        self.set_default_size(WINDOW_WIDTH, WINDOW_HEIGHT)
 
         self.headerbar = Gtk.HeaderBar()
         self.headerbar.set_show_close_button(True)
@@ -497,22 +498,21 @@ class TypingWindow(Gtk.ApplicationWindow):
         self.set_titlebar(self.headerbar)
 
         # See https://gitlab.gnome.org/GNOME/Initiatives/-/wikis/App-Menu-Retirement
-        menu_button = Gtk.MenuButton()
+        self.menu_button = Gtk.MenuButton()
         hamburger_icon = Gio.ThemedIcon(name="open-menu-symbolic")
         image = Gtk.Image.new_from_gicon(hamburger_icon, Gtk.IconSize.BUTTON)
-        menu_button.add(image)
+        self.menu_button.add(image)
         builder = Gtk.Builder()
         builder.set_translation_domain(package.get_name())
         builder.add_from_file(os.path.join(os.path.dirname(__file__), 'menu.ui'))
-        menu_button.set_menu_model(builder.get_object('app-menu'))
-        self.headerbar.pack_end(menu_button)
+        self.menu_button.set_menu_model(builder.get_object('app-menu'))
+        self.headerbar.pack_end(self.menu_button)
 
         self.view = View()
         self.engine = self.view.get_engine()
         self.add(self.view)
         if filename:
             self.open(filename)
-        self.set_default_size(WINDOW_WIDTH, WINDOW_HEIGHT)
         self.show_all()
 
     def __del__(self):
