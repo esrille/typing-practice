@@ -300,6 +300,7 @@ class Keyboard:
         ctx.set_line_join(cairo.LineJoin.ROUND)
         scale = 0.4
         orig_x = x
+        orig_y = y
         h = Keyboard.L * scale
         r = Keyboard.R * scale
         s = Keyboard.S * scale
@@ -308,6 +309,7 @@ class Keyboard:
         shift_right = False
         alt = list()
         index_raw = 0
+        fingers = list()
         for raw in layout:
             index_column = 0
             for column in raw:
@@ -316,21 +318,10 @@ class Keyboard:
                 if column[1] == '⌥':
                     alt.append((x, y, column))
                 w = column[0] * scale
-                color = {
-                    1: (0x00, 0x66, 0xff),
-                    2: (0x99, 0xcc, 0x33),
-                    3: (0xff, 0x99, 0x33),
-                    4: (0xff, 0x33, 0x33),
-                    5: (0xff, 0x33, 0x33),
-                    6: (0xff, 0x33, 0x33),
-                    7: (0xff, 0x33, 0x33),
-                    8: (0xff, 0x99, 0x33),
-                    9: (0x99, 0xcc, 0x33),
-                    10: (0x00, 0x66, 0xff),
-                }.get(index_column, (0x99, 0x99, 0x99))
+                color = self.get_key_color(index_column)
                 if index_raw <= 0 or 4 <= index_raw:
                     color = (0x99, 0x99, 0x99)
-                ctx.set_source_rgb(color[0] / 255, color[1] / 255, color[2] / 255)
+                ctx.set_source_rgb(*[c / 255 for c in color])
                 if self._is_uk_enter(column):
                     self.uk_enter(ctx, x, y, w, h, s, r)
                 else:
@@ -338,10 +329,14 @@ class Keyboard:
                 ctx.stroke()
                 for c in hint:
                     if c in column[1]:
+                        if index_raw < 4:
+                            fingers.append(index_column)
                         if c == '\u3000':
                             c = "空白"
                         self._draw_key(ctx, x, y, w, h, s, r, c)
                     elif c in column[2]:
+                        if index_raw < 4:
+                            fingers.append(index_column)
                         self._draw_key(ctx, x, y, w, h, s, r, c)
                         if index_column <= 5:
                             shift_right = True
@@ -359,6 +354,80 @@ class Keyboard:
                 self._draw_key(ctx, shift[0][0], shift[0][1], shift[0][2][0] * scale, h, s, r, 'シフト')
         if shift_left:
             self._draw_key(ctx, shift[0][0], shift[0][1], shift[0][2][0] * scale, h, s, r, 'シフト')
+
+        # draw fingers
+        if 5 in fingers:
+            fingers.append(4)
+        if 6 in fingers:
+            fingers.append(7)
+        metrics = [(1, 25, 8), (2, 45, 10), (3, 60, 10), (4, 45, 10), (7, 45, 10), (8, 60, 10), (9, 45, 10), (10, 25, 8)]
+        x = orig_x - 100
+        y = orig_y + 4.5 * Keyboard.L * scale
+        for m in metrics:
+            r = m[2]
+            ctx.set_source_rgb(*[c / 255 for c in (0x99, 0x99, 0x99)])
+            ctx.move_to(x, y)
+            y -= m[1]
+            ctx.line_to(x, y)
+            ctx.arc(x + r, y, r, -180 * Keyboard.DEG, 0 * Keyboard.DEG)
+            y += m[1]
+            x += 2 * r
+            ctx.line_to(x, y)
+            ctx.stroke()
+            if m[0] in fingers:
+                color = self.get_key_color(m[0])
+                ctx.set_source_rgb(*[c / 255 for c in color])
+                ctx.arc(x - r, y - m[1] + 1, r * 0.8, 0 * Keyboard.DEG, 360 * Keyboard.DEG)
+                ctx.fill()
+            if m[0] != 4:
+                x += 5
+            else:
+                ctx.set_source_rgb(*[c / 255 for c in (0x99, 0x99, 0x99)])
+                # draw thumbs
+                ctx.move_to(x, y)
+                y += 30
+                ctx.line_to(x, y)
+                x += 20
+                y -= 5
+                ctx.line_to(x, y)
+                ctx.arc(x, y + r, r, -90 * Keyboard.DEG, 90 * Keyboard.DEG)
+                y += 2 * r
+                x -= 20
+                y += 5
+                ctx.line_to(x, y)
+
+                x = orig_x + 1500 * scale + 7
+                y = orig_y + 4.5 * Keyboard.L * scale
+
+                ctx.move_to(x, y)
+                y += 30
+                ctx.line_to(x, y)
+                x -= 20
+                y -= 5
+                ctx.line_to(x, y)
+                ctx.arc_negative(x, y + r, r, -90 * Keyboard.DEG, 90 * Keyboard.DEG)
+                y += 2 * r
+                x += 20
+                y += 5
+                ctx.line_to(x, y)
+
+                x = orig_x + 1500 * scale + 7
+
+            y = orig_y + 4.5 * Keyboard.L * scale
+
+    def get_key_color(self, column):
+        return {
+            1: (0x00, 0x66, 0xff),
+            2: (0x99, 0xcc, 0x33),
+            3: (0xff, 0x99, 0x33),
+            4: (0xff, 0x33, 0x33),
+            5: (0xff, 0x33, 0x33),
+            6: (0xff, 0x33, 0x33),
+            7: (0xff, 0x33, 0x33),
+            8: (0xff, 0x99, 0x33),
+            9: (0x99, 0xcc, 0x33),
+            10: (0x00, 0x66, 0xff),
+        }.get(column, (0x99, 0x99, 0x99))
 
     def get_key_count(self, reading: str):
         if self.is_roomazi():

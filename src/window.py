@@ -291,7 +291,7 @@ class View(Gtk.DrawingArea):
             current = get_prefix(text, self.engine.get_typed())
             if len(current) <= len(text):
                 current = text[len(current):]
-            pair = self.keyboard.draw(ctx, x, WINDOW_HEIGHT - 256, current)
+            pair = self.keyboard.draw(ctx, x + MARGIN_RIGHT / 2, WINDOW_HEIGHT - 256, current)
             if pair[0]:
                 ctx.set_source_rgb(0, 0, 0)
                 ctx.move_to(x, WINDOW_HEIGHT - MARGIN_BOTTOM - STOPWATCH_HEIGHT)
