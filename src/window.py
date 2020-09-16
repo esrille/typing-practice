@@ -511,6 +511,10 @@ class TypingWindow(Gtk.ApplicationWindow):
         self.menu_button.set_menu_model(builder.get_object('app-menu'))
         self.headerbar.pack_end(self.menu_button)
 
+        action = Gio.SimpleAction.new("menu", None)
+        action.connect("activate", self.menu_callback)
+        self.add_action(action)
+
         self.view = View()
         self.engine = self.view.get_engine()
         self.add(self.view)
@@ -521,6 +525,9 @@ class TypingWindow(Gtk.ApplicationWindow):
     def __del__(self):
         logger.info('TypingWindow.__del__')
         self.quit()
+
+    def menu_callback(self, *whatever):
+        self.menu_button.set_active(not self.menu_button.get_active())
 
     def open(self, filename):
         self.engine.open(filename)

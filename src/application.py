@@ -57,9 +57,6 @@ class Application(Gtk.Application):
     def do_startup(self):
         Gtk.Application.do_startup(self)
 
-        action = Gio.SimpleAction.new("menu", None)
-        action.connect("activate", self.on_menu)
-        self.add_action(action)
         action = Gio.SimpleAction.new("help", None)
         action.connect("activate", self.on_help)
         self.add_action(action)
@@ -70,7 +67,7 @@ class Application(Gtk.Application):
         action.connect("activate", self.on_quit)
         self.add_action(action)
         self.set_accels_for_action("app.help", ["F1"])
-        self.set_accels_for_action("app.menu", ["F10"])
+        self.set_accels_for_action("win.menu", ["F10"])
         self.set_accels_for_action("app.quit", ["<Primary>q"])
 
     def do_window_removed(self, window):
@@ -103,10 +100,6 @@ class Application(Gtk.Application):
         if self.window:
             # see https://gitlab.gnome.org/GNOME/gtk/-/issues/1211
             self.window.get_window().set_cursor(self.cursor)
-
-    def on_menu(self, *args):
-        if self.window:
-            self.window.menu_button.set_active(not self.window.menu_button.get_active())
 
     def on_quit(self, *args):
         if self.window:
