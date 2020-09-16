@@ -15,4 +15,4 @@
 # limitations under the License.
 
 export IBUS_DISABLE_SNOOPER=1
-exec @PYTHON@ ${pkgdatadir}/src/main.py $@
+exec @PYTHON@ ${pkgdatadir}/src/main.py \$@

@@ -36,9 +36,23 @@ class Application(Gtk.Application):
         super().__init__(
             *args,
             application_id="com.esrille.typing",
+            flags=Gio.ApplicationFlags.HANDLES_OPEN,
             **kwargs
         )
         self.window = None
+
+    def do_activate(self):
+        if not self.window:
+            filename = os.path.join(package.get_datadir(), 'lessons/menu.txt')
+            self.window = TypingWindow(application=self, filename=filename)
+            self.cursor = Gdk.Cursor.new_from_name(self.window.get_display(), "default")
+        self.window.present()
+
+    def do_open(self, files, *hint):
+        if not self.window:
+            self.window = TypingWindow(application=self, filename=files[0].get_path())
+            self.cursor = Gdk.Cursor.new_from_name(self.window.get_display(), "default")
+        self.window.present()
 
     def do_startup(self):
         Gtk.Application.do_startup(self)
@@ -59,24 +73,10 @@ class Application(Gtk.Application):
         self.set_accels_for_action("app.menu", ["F10"])
         self.set_accels_for_action("app.quit", ["<Primary>q"])
 
-    def do_activate(self):
-        if not self.window:
-            filename = os.path.join(package.get_datadir(), 'lessons/menu.txt')
-            self.window = TypingWindow(application=self, filename=filename)
-            self.cursor = Gdk.Cursor.new_from_name(self.window.get_display(), "default")
-        self.window.present()
-
     def do_window_removed(self, window):
         logger.info('do_window_removed')
         window.quit()
         self.quit()
-
-    def on_help(self, *args):
-        url = "file://" + os.path.join(package.get_datadir(), "help/index.html")
-        Gtk.show_uri_on_window(self.window, url, Gdk.CURRENT_TIME)
-        if self.window:
-            # see https://gitlab.gnome.org/GNOME/gtk/-/issues/1211
-            self.window.get_window().set_cursor(self.cursor)
 
     def on_about(self, action, param):
         dialog = Gtk.AboutDialog(transient_for=self.window, modal=True)
@@ -90,12 +90,19 @@ class Application(Gtk.Application):
         dialog.set_version(package.get_version())
         dialog.present()
         # To close the dialog when "close" is clicked, e.g. on Raspberry Pi OS,
-        # the "response" signal needs to be connected about_response_callback
-        dialog.connect("response", self.about_response_callback)
+        # the "response" signal needs to be connected on_about_response
+        dialog.connect("response", self.on_about_response)
         dialog.show()
 
-    def about_response_callback(self, dialog, response):
+    def on_about_response(self, dialog, response):
         dialog.destroy()
+
+    def on_help(self, *args):
+        url = "file://" + os.path.join(package.get_datadir(), "help/index.html")
+        Gtk.show_uri_on_window(self.window, url, Gdk.CURRENT_TIME)
+        if self.window:
+            # see https://gitlab.gnome.org/GNOME/gtk/-/issues/1211
+            self.window.get_window().set_cursor(self.cursor)
 
     def on_menu(self, *args):
         if self.window:
