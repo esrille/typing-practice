@@ -123,14 +123,6 @@ class Stats:
         self.today_touch_count = 0
         self.stats = list()
 
-    def close(self):
-        logger.info("Stats closed")
-        self.file.close()
-
-    def reset(self):
-        self._reset_stats()
-        self.file = open(self.filename, mode='w')
-
     def _update(self, date, duration, correct_count, touch_count):
         wpm = int(correct_count * 60 / duration / 5)
         accuracy = round(correct_count / touch_count, 2)
@@ -168,14 +160,22 @@ class Stats:
             self.today_correct_count += correct_count
         self._update(today, self.today_duration, self.today_correct_count, self.today_touch_count)
 
-    def get_stats(self):
-        return self.stats
+    def close(self):
+        logger.info("Stats closed")
+        self.file.close()
 
     def get_max_duration(self):
         return self.max_duration
 
     def get_max_wpm(self):
         return self.max_wpm
+
+    def get_stats(self):
+        return self.stats
+
+    def reset(self):
+        self._reset_stats()
+        self.file = open(self.filename, mode='w')
 
 
 class Engine:
@@ -209,10 +209,111 @@ class Engine:
     def __del__(self):
         self.quit()
 
-    def quit(self):
-        if self.mode != EngineMode.EXIT:
-            self.stats.close()
-        self.mode = EngineMode.EXIT
+    def append(self, str):
+        if self.is_practice_mode():
+            was_empty = self.is_empty()
+            if self.zenkaku:
+                str = to_zenkaku(str)
+            self.typed += str
+            if was_empty and not self.is_empty():
+                self.start_test()
+
+    def backspace(self):
+        if self.is_practice_mode() and self.typed:
+            self.typed = self.typed[:-1]
+            if self.is_empty():
+                self.reset_practice()
+
+    def delete(self, offset, n_chars, reset=True):
+        begin = len(self.typed) + offset
+        if begin < 0:
+            return False
+        end = begin + n_chars
+        if len(self.typed) < end:
+            return False
+        self.typed = self.typed[:begin] + self.typed[end:]
+        if self.is_empty() and reset:
+            self.reset_practice()
+        return True
+
+    def enter(self, keyboard):
+        if self.mode in (EngineMode.SCORE, EngineMode.STATS):
+            self.mode = EngineMode.RUN
+        elif self.mode == EngineMode.PRACTICE:
+            if self.is_finished(no_wait=True):
+                self.finish_practice(keyboard)
+                return
+            was_empty = self.is_empty()
+            self.typed += '\n'
+            if was_empty and not self.is_empty():
+                self.start_test()
+
+    def escape(self):
+        if self.mode == EngineMode.STATS:
+            self.mode = EngineMode.RUN
+        else:
+            self.up()
+
+    def finish_practice(self, keyboard):
+        self.stats.append(self)
+        if self.repeat == 0:
+            self.mode = EngineMode.RUN
+            return True
+        self.reset_practice()
+        self.pick_text(keyboard)
+        return False
+
+    def get_accuracy(self):
+        return 1 - self.get_error_ratio()
+
+    def get_correct_count(self):
+        return self.correct_count
+
+    # Return corrected Characters Per Minute
+    def get_cpm(self):
+        count = self.get_correct_count()
+        if self.get_touch_count() < count:
+            count = self.get_touch_count()
+        return count * 60 / self.get_duration()
+
+    def get_error_count(self):
+        missed = self.get_touch_count() - self.get_correct_count()
+        if missed < 0:
+            return 0
+        return missed
+
+    def get_duration(self):
+        if self.start_time <= 0:
+            return 0
+        if self.plain == self.typed and self.preedit[2] <= 0:
+            if self.finish_time <= self.start_time:
+                self.finish_time = time.monotonic()
+            t = self.finish_time - self.start_time
+        else:
+            self.finish_time = self.start_time    # Reset finished state
+            t = time.monotonic() - self.start_time
+        return t
+
+    def get_error_ratio(self):
+        return self.get_error_count() / self.get_touch_count()
+
+    def get_filename(self):
+        return self.filename
+
+    def get_hint(self):
+        return self.hint
+
+    def get_ime_mode(self):
+        return self.ime_mode
+
+    def get_mode(self):
+        return self.mode
+
+    def get_plain(self):
+        return self.plain
+
+    def get_preedit(self):
+        return self.preedit
 
     """
     3rd: 15 wpm, 85% accuracy
@@ -229,11 +330,60 @@ class Engine:
             score = 10
         return score
 
-    def reset_practice(self):
-        self.typed = ''
-        self.preedit = ('', None, 0)
-        self.start_time = self.finish_time = 0
-        self.touch_count = 0
+    def get_show_keyboard(self):
+        return self.show_keyboard
+
+    def get_stats(self):
+        return self.stats
+
+    def get_text(self):
+        return self.text
+
+    def get_title(self):
+        return self.title
+
+    def get_touch_count(self):
+        return self.touch_count
+
+    def get_typed(self):
+        return self.typed
+
+    # Return corrected Words Per Minute
+    def get_wpm(self):
+        return int(self.get_cpm() / 5)
+
+    def is_empty(self):
+        return not self.typed and self.preedit[2] <= 0
+
+    def is_finished(self, no_wait=False):
+        self.get_duration()
+        if self.finish_time <= self.start_time:
+            return False
+        if no_wait:
+            return True
+        # Wait a few more seconds
+        t = time.monotonic() - self.finish_time
+        return DELAY_FINISH <= t
+
+    def is_practice_mode(self):
+        return self.mode == EngineMode.PRACTICE
+
+    def is_timeup(self):
+        return TIME_OVER <= self.get_duration()
+
+    # Count the number of typed characters
+    def key_press(self, event):
+        if event.state & Gdk.ModifierType.MODIFIER_RESERVED_25_MASK:
+            return
+        if not self.is_practice_mode():
+            return
+        if event.keyval not in self.ignore:
+            self.touch_count += 1
+
+    def markup(self, s: str):
+        s = s.replace('<kbd>', '<span background="#00cc99" foreground="#FFFFFF">')
+        s = s.replace('</kbd>', '</span>')
+        return s
 
     def open(self, filename):
         try:
@@ -256,29 +406,6 @@ class Engine:
         except:
             logger.error('"%s" was not found.', filename)
 
-    def up(self):
-        if not self.up_list:
-            return
-        if self.up_list[-1] != self.filename:
-            filename = self.up_list.pop(-1)
-        elif 1 < len(self.up_list):
-            self.up_list.pop(-1)
-            filename = self.up_list.pop(-1)
-        else:
-            filename = self.filename
-        self.open(filename)
-        logger.info("up: %s", filename)
-        return
-
-    def finish_practice(self, keyboard):
-        self.stats.append(self)
-        if self.repeat == 0:
-            self.mode = EngineMode.RUN
-            return True
-        self.reset_practice()
-        self.pick_text(keyboard)
-        return False
-
     def pick_text(self, keyboard):
         self.text = ''
         while 0 < self.repeat:
@@ -289,6 +416,17 @@ class Engine:
         self.plain, self.reading = get_plain_text(self.text)
         self.correct_count = keyboard.get_key_count(self.reading)
         self.repeat = 0
+
+    def quit(self):
+        if self.mode != EngineMode.EXIT:
+            self.stats.close()
+        self.mode = EngineMode.EXIT
+
+    def reset_practice(self):
+        self.typed = ''
+        self.preedit = ('', None, 0)
+        self.start_time = self.finish_time = 0
+        self.touch_count = 0
 
     def run(self, keyboard):
         if not self.lines:
@@ -381,80 +519,6 @@ class Engine:
                 self.zenkaku = True
         return False
 
-    def get_mode(self):
-        return self.mode
-
-    def is_practice_mode(self):
-        return self.mode == EngineMode.PRACTICE
-
-    def start_test(self):
-        self.start_time = self.finish_time = time.monotonic()
-
-    def get_text(self):
-        return self.text
-
-    def get_plain(self):
-        return self.plain
-
-    def get_hint(self):
-        return self.hint
-
-    def get_ime_mode(self):
-        return self.ime_mode
-
-    def get_typed(self):
-        return self.typed
-
-    def get_filename(self):
-        return self.filename
-
-    def get_title(self):
-        return self.title
-
-    def get_show_keyboard(self):
-        return self.show_keyboard
-
-    def is_empty(self):
-        return not self.typed and self.preedit[2] <= 0
-
-    # Count the number of typed characters
-    def key_press(self, event):
-        if event.state & Gdk.ModifierType.MODIFIER_RESERVED_25_MASK:
-            return
-        if not self.is_practice_mode():
-            return
-        if event.keyval not in self.ignore:
-            self.touch_count += 1
-
-    def get_touch_count(self):
-        return self.touch_count
-
-    def get_correct_count(self):
-        return self.correct_count
-
-    def get_error_count(self):
-        missed = self.get_touch_count() - self.get_correct_count()
-        if missed < 0:
-            return 0
-        return missed
-
-    # Return corrected Characters Per Minute
-    def get_cpm(self):
-        count = self.get_correct_count()
-        if self.get_touch_count() < count:
-            count = self.get_touch_count()
-        return count * 60 / self.get_duration()
-
-    # Return corrected Words Per Minute
-    def get_wpm(self):
-        return int(self.get_cpm() / 5)
-
-    def get_error_ratio(self):
-        return self.get_error_count() / self.get_touch_count()
-
-    def get_accuracy(self):
-        return 1 - self.get_error_ratio()
-
     def select(self, n):
         if self.mode == EngineMode.MENU and n < len(self.menu):
             next = self.menu[n]
@@ -471,54 +535,6 @@ class Engine:
             return True
         return False
 
-    def backspace(self):
-        if self.is_practice_mode() and self.typed:
-            self.typed = self.typed[:-1]
-            if self.is_empty():
-                self.reset_practice()
-
-    def escape(self):
-        if self.mode == EngineMode.STATS:
-            self.mode = EngineMode.RUN
-        else:
-            self.up()
-
-    def enter(self, keyboard):
-        if self.mode in (EngineMode.SCORE, EngineMode.STATS):
-            self.mode = EngineMode.RUN
-        elif self.mode == EngineMode.PRACTICE:
-            if self.is_finished(no_wait=True):
-                self.finish_practice(keyboard)
-                return
-            was_empty = self.is_empty()
-            self.typed += '\n'
-            if was_empty and not self.is_empty():
-                self.start_test()
-
-    def append(self, str):
-        if self.is_practice_mode():
-            was_empty = self.is_empty()
-            if self.zenkaku:
-                str = to_zenkaku(str)
-            self.typed += str
-            if was_empty and not self.is_empty():
-                self.start_test()
-
-    def delete(self, offset, n_chars, reset=True):
-        begin = len(self.typed) + offset
-        if begin < 0:
-            return False
-        end = begin + n_chars
-        if len(self.typed) < end:
-            return False
-        self.typed = self.typed[:begin] + self.typed[end:]
-        if self.is_empty() and reset:
-            self.reset_practice()
-        return True
-
-    def get_preedit(self):
-        return self.preedit
-
     def set_preedit(self, preedit):
         if self.is_practice_mode():
             was_empty = self.is_empty()
@@ -530,40 +546,24 @@ class Engine:
                 if was_empty:
                     self.start_test()
 
-    def get_duration(self):
-        if self.start_time <= 0:
-            return 0
-        if self.plain == self.typed and self.preedit[2] <= 0:
-            if self.finish_time <= self.start_time:
-                self.finish_time = time.monotonic()
-            t = self.finish_time - self.start_time
-        else:
-            self.finish_time = self.start_time    # Reset finished state
-            t = time.monotonic() - self.start_time
-        return t
-
-    def is_finished(self, no_wait=False):
-        self.get_duration()
-        if self.finish_time <= self.start_time:
-            return False
-        if no_wait:
-            return True
-        # Wait a few more seconds
-        t = time.monotonic() - self.finish_time
-        return DELAY_FINISH <= t
-
-    def is_timeup(self):
-        return TIME_OVER <= self.get_duration()
-
     def show_stats(self):
         assert self.mode == EngineMode.MENU
         self.mode = EngineMode.STATS
         self.title = ''
 
-    def get_stats(self):
-        return self.stats
+    def start_test(self):
+        self.start_time = self.finish_time = time.monotonic()
 
-    def markup(self, s: str):
-        s = s.replace('<kbd>', '<span background="#00cc99" foreground="#FFFFFF">')
-        s = s.replace('</kbd>', '</span>')
-        return s
+    def up(self):
+        if not self.up_list:
+            return
+        if self.up_list[-1] != self.filename:
+            filename = self.up_list.pop(-1)
+        elif 1 < len(self.up_list):
+            self.up_list.pop(-1)
+            filename = self.up_list.pop(-1)
+        else:
+            filename = self.filename
+        self.open(filename)
+        logger.info("up: %s", filename)
+        return

@@ -103,98 +103,6 @@ class View(Gtk.DrawingArea):
         self.keyboard = Keyboard(self.roomazi)
         self.engine = Engine(self.roomazi)
 
-    def get_engine(self):
-        return self.engine
-
-    def on_focus_in(self, wid, event):
-        ime.check_engine()
-        ime.set_mode(self.get_engine().get_ime_mode())
-        self.im_context.focus_in()
-        return True
-
-    def on_focus_out(self, wid, event):
-        self.im_context.focus_out()
-        ime.restore_engine()
-        return True
-
-    def on_key_press(self, wid, event):
-        if not event.state & Gdk.ModifierType.MODIFIER_RESERVED_25_MASK:
-            logger.info("'%s', %08x", Gdk.keyval_name(event.keyval), event.state)
-            if not self.keyboard.is_ignore(event):
-                self.engine.key_press(event)
-        if self.engine.get_mode() == EngineMode.MENU:
-            try:
-                n = (Gdk.KEY_1, Gdk.KEY_2, Gdk.KEY_3, Gdk.KEY_4, Gdk.KEY_5,
-                     Gdk.KEY_6, Gdk.KEY_7, Gdk.KEY_8, Gdk.KEY_9, Gdk.KEY_0).index(event.keyval)
-                if self.engine.select(n):
-                    self.queue_draw()
-                return True
-            except ValueError:
-                pass
-        if self.im_context.filter_keypress(event):
-            return True
-        if event.keyval == Gdk.KEY_Escape:
-            self.engine.escape()
-            self.queue_draw()
-            return True
-        if event.keyval == Gdk.KEY_BackSpace:
-            self.engine.backspace()
-            self.queue_draw()
-            return True
-        if event.keyval == Gdk.KEY_Return:
-            self.engine.enter(self.keyboard)
-            self.queue_draw()
-            return True
-        if event.keyval == Gdk.KEY_F5:
-            if self.engine.get_mode() == EngineMode.MENU:
-                self.engine.show_stats()
-                self.queue_draw()
-            return True
-        if event.keyval == Gdk.KEY_F2:
-            if self.engine.get_mode() == EngineMode.STATS:
-                self.engine.get_stats().reset()
-                self.queue_draw()
-            return True
-        return False
-
-    def on_key_release(self, wid, event):
-        if self.im_context.filter_keypress(event):
-            return True
-        return False
-
-    def on_retrieve_surrounding(self, wid):
-        if self.engine.is_practice_mode():
-            typed = self.engine.get_typed()
-            length = len(typed.encode())
-            self.im_context.set_surrounding(typed, length, length)
-        else:
-            self.im_context.set_surrounding('', 0, 0)
-        return True
-
-    def on_commit(self, wid, str):
-        self.engine.append(str)
-        self.queue_draw()
-
-    def on_delete_surrounding(self, wid, offset, n_chars):
-        self.engine.delete(offset, n_chars, reset=False)
-        self.queue_draw()
-        return True
-
-    def on_preedit_changed(self, wid):
-        self.engine.set_preedit(self.im_context.get_preedit_string())
-        self.queue_draw()
-        return False
-
-    def on_preedit_end(self, wid):
-        self.engine.set_preedit(self.im_context.get_preedit_string())
-        self.queue_draw()
-        return False
-
-    def on_preedit_start(self, wid):
-        self.engine.set_preedit(self.im_context.get_preedit_string())
-        self.queue_draw()
-        return False
-
     def _clear(self, wid, ctx):
         width = wid.get_allocated_width()
         height = wid.get_allocated_height()
@@ -202,11 +110,6 @@ class View(Gtk.DrawingArea):
         ctx.rectangle(0, 0, width, height)
         ctx.fill()
         ctx.set_source_rgb(0, 0, 0)
-
-    def _show_aligned_text(self, ctx: cairo.Context, text, x, y):
-        extents = ctx.text_extents(text)
-        ctx.rel_move_to(x * extents.width, y * extents.height)
-        ctx.show_text(text)
 
     def _draw_caret(self, ctx, layout, current, x, y):
         ctx.save()
@@ -225,6 +128,25 @@ class View(Gtk.DrawingArea):
         self.caret.x = x
         self.caret.y = y
         self.im_context.set_cursor_location(self.caret)
+
+    def _draw_hints(self, wid, ctx: cairo.Context, hint):
+        hint = self.engine.markup(hint)
+
+        ctx.set_source_rgb(0x99 / 255, 0x99 / 255, 0x99 / 255)
+        ctx.set_line_width(1)
+        ctx.move_to(MARGIN_LEFT - 10, 5)
+        ctx.line_to(MARGIN_LEFT - 10, WINDOW_HEIGHT - 5)
+        ctx.stroke()
+
+        ctx.set_source_rgb(0, 0, 0)
+        hurigana = HuriganaLayout(ctx)
+        hurigana.set_ruby_size(HINT_SIZE / 2.5)
+        desc = Pango.font_description_from_string(HINT_FONT)
+        hurigana.set_font_description(desc)
+        hurigana.set_width(MARGIN_LEFT - 30)
+        hurigana.set_spacing(HINT_SPACING)
+        hurigana.set_markup(hint)
+        hurigana.draw(10, MARGIN_TOP)
 
     def _draw_menu(self, wid, ctx):
         # Draw text
@@ -436,24 +358,22 @@ class View(Gtk.DrawingArea):
 
         self._draw_hints(wid, ctx, '<kbd>Esc</kbd> もどる\n<kbd>F2</kbd> きろくのリセット')
 
-    def _draw_hints(self, wid, ctx: cairo.Context, hint):
-        hint = self.engine.markup(hint)
+    def _show_aligned_text(self, ctx: cairo.Context, text, x, y):
+        extents = ctx.text_extents(text)
+        ctx.rel_move_to(x * extents.width, y * extents.height)
+        ctx.show_text(text)
 
-        ctx.set_source_rgb(0x99 / 255, 0x99 / 255, 0x99 / 255)
-        ctx.set_line_width(1)
-        ctx.move_to(MARGIN_LEFT - 10, 5)
-        ctx.line_to(MARGIN_LEFT - 10, WINDOW_HEIGHT - 5)
-        ctx.stroke()
+    def get_engine(self):
+        return self.engine
 
-        ctx.set_source_rgb(0, 0, 0)
-        hurigana = HuriganaLayout(ctx)
-        hurigana.set_ruby_size(HINT_SIZE / 2.5)
-        desc = Pango.font_description_from_string(HINT_FONT)
-        hurigana.set_font_description(desc)
-        hurigana.set_width(MARGIN_LEFT - 30)
-        hurigana.set_spacing(HINT_SPACING)
-        hurigana.set_markup(hint)
-        hurigana.draw(10, MARGIN_TOP)
+    def on_commit(self, im, str):
+        self.engine.append(str)
+        self.queue_draw()
+
+    def on_delete_surrounding(self, im, offset, n_chars):
+        self.engine.delete(offset, n_chars, reset=False)
+        self.queue_draw()
+        return True
 
     def on_draw(self, wid, ctx: cairo.Context):
         if self.engine.run(self.keyboard):
@@ -478,6 +398,86 @@ class View(Gtk.DrawingArea):
             self._draw_menu(wid, ctx)
         elif self.engine.get_mode() == EngineMode.STATS:
             self._draw_stats(wid, ctx)
+
+    def on_focus_in(self, wid, event):
+        ime.check_engine()
+        ime.set_mode(self.get_engine().get_ime_mode())
+        self.im_context.focus_in()
+        return True
+
+    def on_focus_out(self, wid, event):
+        self.im_context.focus_out()
+        ime.restore_engine()
+        return True
+
+    def on_key_press(self, wid, event):
+        if not event.state & Gdk.ModifierType.MODIFIER_RESERVED_25_MASK:
+            logger.info("'%s', %08x", Gdk.keyval_name(event.keyval), event.state)
+            if not self.keyboard.is_ignore(event):
+                self.engine.key_press(event)
+        if self.engine.get_mode() == EngineMode.MENU:
+            try:
+                n = (Gdk.KEY_1, Gdk.KEY_2, Gdk.KEY_3, Gdk.KEY_4, Gdk.KEY_5,
+                     Gdk.KEY_6, Gdk.KEY_7, Gdk.KEY_8, Gdk.KEY_9, Gdk.KEY_0).index(event.keyval)
+                if self.engine.select(n):
+                    self.queue_draw()
+                return True
+            except ValueError:
+                pass
+        if self.im_context.filter_keypress(event):
+            return True
+        if event.keyval == Gdk.KEY_Escape:
+            self.engine.escape()
+            self.queue_draw()
+            return True
+        if event.keyval == Gdk.KEY_BackSpace:
+            self.engine.backspace()
+            self.queue_draw()
+            return True
+        if event.keyval == Gdk.KEY_Return:
+            self.engine.enter(self.keyboard)
+            self.queue_draw()
+            return True
+        if event.keyval == Gdk.KEY_F5:
+            if self.engine.get_mode() == EngineMode.MENU:
+                self.engine.show_stats()
+                self.queue_draw()
+            return True
+        if event.keyval == Gdk.KEY_F2:
+            if self.engine.get_mode() == EngineMode.STATS:
+                self.engine.get_stats().reset()
+                self.queue_draw()
+            return True
+        return False
+
+    def on_key_release(self, wid, event):
+        if self.im_context.filter_keypress(event):
+            return True
+        return False
+
+    def on_preedit_changed(self, im):
+        self.engine.set_preedit(self.im_context.get_preedit_string())
+        self.queue_draw()
+        return False
+
+    def on_preedit_end(self, im):
+        self.engine.set_preedit(self.im_context.get_preedit_string())
+        self.queue_draw()
+        return False
+
+    def on_preedit_start(self, im):
+        self.engine.set_preedit(self.im_context.get_preedit_string())
+        self.queue_draw()
+        return False
+
+    def on_retrieve_surrounding(self, im):
+        if self.engine.is_practice_mode():
+            typed = self.engine.get_typed()
+            length = len(typed.encode())
+            self.im_context.set_surrounding(typed, length, length)
+        else:
+            self.im_context.set_surrounding('', 0, 0)
+        return True
 
     def timeout(self):
         self.queue_draw()

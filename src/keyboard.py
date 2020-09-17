@@ -104,54 +104,20 @@ class Keyboard:
         self.load_keyboard_layout()
         self.roomazi.set_x4063(self.config.get_boolean('nn-as-jis-x-4063'))
 
-    def load_keyboard_layout(self):
-        path = self.config.get_string('layout')
-        if path.endswith('.109.json'):
-            self.layout = Keyboard.LAYOUT_109
-        else:
-            self.layout = Keyboard.LAYOUT_104
-        self.roomazi_layout = list()
-        self.kana_layout = list()
-        self.kogaki = KOGAKI
-        self.ignore = [Gdk.KEY_VoidSymbol]
-        if "roomazi" in path:
-            self._load_roomazi_layout(path)
-        else:
-            self._load_kana_layout(path)
+    def _draw_key(self, ctx, x, y, w, h, s, r, legend=''):
+        self.round_rect(ctx, x + s, y + s, w - 2 * s, h - 2 * s, r)
+        ctx.fill()
+        if legend:
+            ext = ctx.text_extents(legend)
+            ctx.move_to(x + (w - ext[4]) / 2, y + (h + ext[3]) / 2)
+            ctx.save()
+            ctx.set_source_rgb(255, 255, 255)
+            ctx.show_text(legend.upper())
+            ctx.restore()
 
-    def _load_roomazi_layout(self, path):
-        try:
-            with open(path) as f:
-                ime_layout = json.load(f)
-                layout = list()
-                space = ime_layout.get('Space')
-                henkan = ime_layout.get('Henkan')
-                if henkan:
-                    henkan = Gdk.keyval_from_name(henkan)
-                    self.ignore.append(henkan)
-                    henkan = chr(henkan)
-                for r in self.layout:
-                    row = list()
-                    index = 0
-                    for c in r:
-                        n = c[1]
-                        s = c[2].lower()
-                        keyval = Keyboard.KEYVAL_MAP.get(n, '')
-                        if keyval:
-                            if 4 <= index:
-                                keyval += 'R'
-                            else:
-                                keyval += 'L'
-                        if n == henkan:
-                            n = ''
-                        if space == keyval:
-                            n = ' '
-                        row.append((c[0], n, s))
-                        index += 1
-                    layout.append(row)
-                self.roomazi_layout = layout
-        except:
-            logger.error('Could not load:', path)
+    # Is column the [Enter] key that spans two rows?
+    def _is_uk_enter(self, column):
+        return column[1] == '⏎' and column[0] == 150
 
     def _load_kana_layout(self, path):
         try:
@@ -216,69 +182,39 @@ class Keyboard:
             self.kana_layout = list()
             self.kogaki = KOGAKI
 
-    def is_ignore(self, event):
-        if event.keyval in self.ignore:
-            return True
-        return False
-
-    def round_rect(self, ctx, x, y, w, h, r):
-        ctx.new_path()
-        ctx.arc(x + w - r, y + r, r, -90 * Keyboard.DEG, 0 * Keyboard.DEG)
-        ctx.arc(x + w - r, y + h - r, r, 0 * Keyboard.DEG, 90 * Keyboard.DEG)
-        ctx.arc(x + r, y + h - r, r, 90 * Keyboard.DEG, 180 * Keyboard.DEG)
-        ctx.arc(x + r, y + r, r, 180 * Keyboard.DEG, 270 * Keyboard.DEG)
-        ctx.close_path()
-
-    def uk_enter(self, ctx, x, y, w, h, s, r):
-        x1 = x + s
-        y1 = y + s
-        w1 = w - 2 * s
-        h1 = h - 2 * s
-        x2 = x + w * (25 / 150) + s
-        h2 = h1 + h
-        ctx.new_path()
-        ctx.arc(x1 + w1 - r, y1 + r, r, -90 * Keyboard.DEG, 0 * Keyboard.DEG)
-        ctx.arc(x1 + w1 - r, y1 + h2 - r, r, 0 * Keyboard.DEG, 90 * Keyboard.DEG)
-        ctx.arc(x2 + r, y1 + h2 - r, r, 90 * Keyboard.DEG, 180 * Keyboard.DEG)
-        ctx.arc_negative(x2 - r, y1 + h1 + r, r, 0 * Keyboard.DEG, -90 * Keyboard.DEG)
-        ctx.arc(x1 + r, y1 + h1 - r, r, 90 * Keyboard.DEG, 180 * Keyboard.DEG)
-        ctx.arc(x1 + r, y1 + r, r, 180 * Keyboard.DEG, 270 * Keyboard.DEG)
-        ctx.close_path()
-
-    # Is column the [Enter] key that spans two rows?
-    def _is_uk_enter(self, column):
-        return column[1] == '⏎' and column[0] == 150
-
-    def _draw_key(self, ctx, x, y, w, h, s, r, legend=''):
-        self.round_rect(ctx, x + s, y + s, w - 2 * s, h - 2 * s, r)
-        ctx.fill()
-        if legend:
-            ext = ctx.text_extents(legend)
-            ctx.move_to(x + (w - ext[4]) / 2, y + (h + ext[3]) / 2)
-            ctx.save()
-            ctx.set_source_rgb(255, 255, 255)
-            ctx.show_text(legend.upper())
-            ctx.restore()
-
-    def get_kana(self, s):
-        if not s:
-            return '', ''
-        c = s[0]
-        if c == '\n':
-            return '⏎', '⏎'
-        elif c in DAKU:
-            c = c.translate(DAKU_TO_NON_DAKU)
-            c += '゛'
-        elif c in HANDAKU:
-            c = c.translate(HANDAKU_TO_NON_HANDAKU)
-            c += '゜'
-        elif c in self.kogaki:
-            c = c.translate(KOGAKI_TO_NON_KOGAKI)
-            c += '゛'
-        return s[0], c
-
-    def is_roomazi(self):
-        return not self.kana_layout
+    def _load_roomazi_layout(self, path):
+        try:
+            with open(path) as f:
+                ime_layout = json.load(f)
+                layout = list()
+                space = ime_layout.get('Space')
+                henkan = ime_layout.get('Henkan')
+                if henkan:
+                    henkan = Gdk.keyval_from_name(henkan)
+                    self.ignore.append(henkan)
+                    henkan = chr(henkan)
+                for r in self.layout:
+                    row = list()
+                    index = 0
+                    for c in r:
+                        n = c[1]
+                        s = c[2].lower()
+                        keyval = Keyboard.KEYVAL_MAP.get(n, '')
+                        if keyval:
+                            if 4 <= index:
+                                keyval += 'R'
+                            else:
+                                keyval += 'L'
+                        if n == henkan:
+                            n = ''
+                        if space == keyval:
+                            n = ' '
+                        row.append((c[0], n, s))
+                        index += 1
+                    layout.append(row)
+                self.roomazi_layout = layout
+        except:
+            logger.error('Could not load:', path)
 
     def draw(self, ctx: cairo.Context, x, y, next: str):
         self.load_keyboard_layout()
@@ -419,6 +355,23 @@ class Keyboard:
 
             y = orig_y + 4.5 * Keyboard.L * scale
 
+    def get_kana(self, s):
+        if not s:
+            return '', ''
+        c = s[0]
+        if c == '\n':
+            return '⏎', '⏎'
+        elif c in DAKU:
+            c = c.translate(DAKU_TO_NON_DAKU)
+            c += '゛'
+        elif c in HANDAKU:
+            c = c.translate(HANDAKU_TO_NON_HANDAKU)
+            c += '゜'
+        elif c in self.kogaki:
+            c = c.translate(KOGAKI_TO_NON_KOGAKI)
+            c += '゛'
+        return s[0], c
+
     def get_key_color(self, column):
         return {
             1: (0x00, 0x66, 0xff),
@@ -447,3 +400,50 @@ class Keyboard:
                 r += pair[1]
             count = len(r)
         return count
+
+    def is_ignore(self, event):
+        if event.keyval in self.ignore:
+            return True
+        return False
+
+    def is_roomazi(self):
+        return not self.kana_layout
+
+    def load_keyboard_layout(self):
+        path = self.config.get_string('layout')
+        if path.endswith('.109.json'):
+            self.layout = Keyboard.LAYOUT_109
+        else:
+            self.layout = Keyboard.LAYOUT_104
+        self.roomazi_layout = list()
+        self.kana_layout = list()
+        self.kogaki = KOGAKI
+        self.ignore = [Gdk.KEY_VoidSymbol]
+        if "roomazi" in path:
+            self._load_roomazi_layout(path)
+        else:
+            self._load_kana_layout(path)
+
+    def round_rect(self, ctx, x, y, w, h, r):
+        ctx.new_path()
+        ctx.arc(x + w - r, y + r, r, -90 * Keyboard.DEG, 0 * Keyboard.DEG)
+        ctx.arc(x + w - r, y + h - r, r, 0 * Keyboard.DEG, 90 * Keyboard.DEG)
+        ctx.arc(x + r, y + h - r, r, 90 * Keyboard.DEG, 180 * Keyboard.DEG)
+        ctx.arc(x + r, y + r, r, 180 * Keyboard.DEG, 270 * Keyboard.DEG)
+        ctx.close_path()
+
+    def uk_enter(self, ctx, x, y, w, h, s, r):
+        x1 = x + s
+        y1 = y + s
+        w1 = w - 2 * s
+        h1 = h - 2 * s
+        x2 = x + w * (25 / 150) + s
+        h2 = h1 + h
+        ctx.new_path()
+        ctx.arc(x1 + w1 - r, y1 + r, r, -90 * Keyboard.DEG, 0 * Keyboard.DEG)
+        ctx.arc(x1 + w1 - r, y1 + h2 - r, r, 0 * Keyboard.DEG, 90 * Keyboard.DEG)
+        ctx.arc(x2 + r, y1 + h2 - r, r, 90 * Keyboard.DEG, 180 * Keyboard.DEG)
+        ctx.arc_negative(x2 - r, y1 + h1 + r, r, 0 * Keyboard.DEG, -90 * Keyboard.DEG)
+        ctx.arc(x1 + r, y1 + h1 - r, r, 90 * Keyboard.DEG, 180 * Keyboard.DEG)
+        ctx.arc(x1 + r, y1 + r, r, 180 * Keyboard.DEG, 270 * Keyboard.DEG)
+        ctx.close_path()

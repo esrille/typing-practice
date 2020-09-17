@@ -238,9 +238,13 @@ class Roomazi:
     def __init__(self):
         self.x4063 = True
 
-    def set_x4063(self, value: bool):
-        self.x4063 = value
-        logger.info('x4063: %d', value)
+    def get_roomazi(self, s):
+        c, r = self.get_roomazi_without_tyouon(s)
+        s = s[len(c):]
+        if s and s[0] == 'ー' and r and r[-1] in 'aiueo':
+            c += 'ー'
+            r = r[:-1] + r[-1].translate(TO_TYOUON)
+        return c, r
 
     def get_roomazi_without_tyouon(self, s):
         if not s:
@@ -276,13 +280,13 @@ class Roomazi:
             return '⏎', '⏎'
         return c, c
 
-    def get_roomazi(self, s):
-        c, r = self.get_roomazi_without_tyouon(s)
-        s = s[len(c):]
-        if s and s[0] == 'ー' and r and r[-1] in 'aiueo':
-            c += 'ー'
-            r = r[:-1] + r[-1].translate(TO_TYOUON)
-        return c, r
+    def hyphenize(self, roomazi):
+        hyphenized = ''
+        for c in roomazi:
+            if c in 'âîûêô':
+                c = c.translate(TO_PLAIN) + '-'
+            hyphenized += c
+        return hyphenized
 
     def romanize(self, s):
         r = ''
@@ -292,10 +296,6 @@ class Roomazi:
             r += pair[1]
         return r
 
-    def hyphenize(self, roomazi):
-        hyphenized = ''
-        for c in roomazi:
-            if c in 'âîûêô':
-                c = c.translate(TO_PLAIN) + '-'
-            hyphenized += c
-        return hyphenized
+    def set_x4063(self, value: bool):
+        self.x4063 = value
+        logger.info('x4063: %d', value)

@@ -70,91 +70,6 @@ class HuriganaLayout:
         self.rubies = list()
         self.ruby_size = 8
 
-    def set_font_description(self, desc):
-        self.font_description = desc
-        self.layout.set_font_description(desc)
-
-    def set_width(self, width):
-        self.width = width
-        self.layout.set_width(self.width * Pango.SCALE)
-
-    def set_spacing(self, spacing):
-        self.layout.set_spacing(spacing * Pango.SCALE)
-
-    def set_text(self, text):
-        self.text = text
-        self.markup = ''
-        self.plain = ''
-        self.rubies.clear()
-        mode = PLAIN
-        i = pos = len = 0
-        ruby = ''
-        for c in self.text:
-            if c == IAA:
-                mode = BASE
-                pos = i
-            elif c == IAS:
-                mode = RUBY
-                len = i - pos
-            elif c == IAT:
-                mode = PLAIN
-                self.rubies.append([pos, len, ruby, ''])
-                ruby = ''
-            elif mode == RUBY:
-                ruby += c
-            else:
-                self.plain += c
-                i += 1
-        self.layout.set_text(self.plain, -1)
-
-    def set_markup(self, text):
-        self.text = text
-        self.markup = ''
-        self.plain = ''
-        self.rubies.clear()
-        mode = PLAIN
-        i = pos = len = 0
-        ruby = ''
-        tag = ''
-        in_open_tag = False
-        in_close_tag = False
-        for c in self.text:
-            if c == IAA:
-                mode = BASE
-                pos = i
-            elif c == IAS:
-                mode = RUBY
-                len = i - pos
-            elif c == IAT:
-                mode = PLAIN
-                self.rubies.append([pos, len, ruby, tag])
-                ruby = ''
-            elif mode == RUBY:
-                ruby += c
-            else:
-                self.markup += c
-                if in_open_tag:
-                    tag += c
-                    if c == '>':
-                        in_open_tag = False
-                elif in_close_tag:
-                    if c == '>':
-                        in_close_tag = False
-                elif c == '<':
-                    if not tag:
-                        in_open_tag = True
-                        tag += c
-                    else:
-                        in_close_tag = True
-                        tag = ''
-                else:
-                    self.plain += c
-                    i += 1
-        self.layout.set_markup(self.markup, -1)
-
-    def set_ruby_size(self, size):
-        self.ruby_size = size
-
     def _draw_rubies(self, offset_x, offset_y):
         lt = PangoCairo.create_layout(self.ctx)
         desc = self.font_description.copy_static()
@@ -216,12 +131,6 @@ class HuriganaLayout:
                     PangoCairo.show_layout(self.ctx, lt)
                     self.ctx.restore()
 
-    def draw(self, x, y):
-        self.ctx.move_to(x, y)
-        PangoCairo.update_layout(self.ctx, self.layout)
-        PangoCairo.show_layout(self.ctx, self.layout)
-        self._draw_rubies(x, y)
-
     def adjust_typed(self, typed):
         current = 0
         length = len(typed)
@@ -239,3 +148,94 @@ class HuriganaLayout:
         if len(typed) < len(self.plain):
             adjusted = adjusted[:-1]
         return adjusted
+
+    def draw(self, x, y):
+        self.ctx.move_to(x, y)
+        PangoCairo.update_layout(self.ctx, self.layout)
+        PangoCairo.show_layout(self.ctx, self.layout)
+        self._draw_rubies(x, y)
+
+    def set_font_description(self, desc):
+        self.font_description = desc
+        self.layout.set_font_description(desc)
+
+    def set_markup(self, text):
+        self.text = text
+        self.markup = ''
+        self.plain = ''
+        self.rubies.clear()
+        mode = PLAIN
+        i = pos = len = 0
+        ruby = ''
+        tag = ''
+        in_open_tag = False
+        in_close_tag = False
+        for c in self.text:
+            if c == IAA:
+                mode = BASE
+                pos = i
+            elif c == IAS:
+                mode = RUBY
+                len = i - pos
+            elif c == IAT:
+                mode = PLAIN
+                self.rubies.append([pos, len, ruby, tag])
+                ruby = ''
+            elif mode == RUBY:
+                ruby += c
+            else:
+                self.markup += c
+                if in_open_tag:
+                    tag += c
+                    if c == '>':
+                        in_open_tag = False
+                elif in_close_tag:
+                    if c == '>':
+                        in_close_tag = False
+                elif c == '<':
+                    if not tag:
+                        in_open_tag = True
+                        tag += c
+                    else:
+                        in_close_tag = True
+                        tag = ''
+                else:
+                    self.plain += c
+                    i += 1
+        self.layout.set_markup(self.markup, -1)
+
+    def set_ruby_size(self, size):
+        self.ruby_size = size
+
+    def set_spacing(self, spacing):
+        self.layout.set_spacing(spacing * Pango.SCALE)
+
+    def set_text(self, text):
+        self.text = text
+        self.markup = ''
+        self.plain = ''
+        self.rubies.clear()
+        mode = PLAIN
+        i = pos = len = 0
+        ruby = ''
+        for c in self.text:
+            if c == IAA:
+                mode = BASE
+                pos = i
+            elif c == IAS:
+                mode = RUBY
+                len = i - pos
+            elif c == IAT:
+                mode = PLAIN
+                self.rubies.append([pos, len, ruby, ''])
+                ruby = ''
+            elif mode == RUBY:
+                ruby += c
+            else:
+                self.plain += c
+                i += 1
+        self.layout.set_text(self.plain, -1)
+
+    def set_width(self, width):
+        self.width = width
+        self.layout.set_width(self.width * Pango.SCALE)
