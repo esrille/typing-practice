@@ -56,10 +56,11 @@ MARGIN_LEFT = (WINDOW_WIDTH - WIDTH) / 2
 MARGIN_RIGHT = MARGIN_LEFT
 MARGIN_TOP = (WINDOW_HEIGHT - HEIGHT) / 2
 MARGIN_BOTTOM = MARGIN_TOP
-STOPWATCH_WIDTH = 140
+STOPWATCH_WIDTH = 80
 STOPWATCH_HEIGHT = 18
 CHART_WIDTH = WIDTH
 CHART_HEIGHT = 400
+PRACTICE_CENTER = MARGIN_LEFT + (MARGIN_RIGHT + 600) / 2
 
 
 def get_title():
@@ -220,10 +221,10 @@ class View(Gtk.DrawingArea):
             pair = self.keyboard.draw(ctx, x + MARGIN_RIGHT / 2, WINDOW_HEIGHT - 256, current)
             if pair[0]:
                 ctx.set_source_rgb(0, 0, 0)
-                ctx.move_to(x, WINDOW_HEIGHT - MARGIN_BOTTOM - STOPWATCH_HEIGHT)
-                ctx.show_text(pair[0])
+                t = pair[0]
                 if pair[0] != pair[1]:
-                    ctx.show_text(' [' + pair[1] + ']')
+                    t += ' [' + pair[1] + ']'
+                self._show_centered_text(ctx, t, PRACTICE_CENTER, WINDOW_HEIGHT - MARGIN_BOTTOM - STOPWATCH_HEIGHT)
 
         # Show stopwatch
         ctx.set_source_rgb(0, 0, 0)
@@ -361,6 +362,11 @@ class View(Gtk.DrawingArea):
     def _show_aligned_text(self, ctx: cairo.Context, text, x, y):
         extents = ctx.text_extents(text)
         ctx.rel_move_to(x * extents.width, y * extents.height)
+        ctx.show_text(text)
+
+    def _show_centered_text(self, ctx: cairo.Context, text, x, y):
+        extents = ctx.text_extents(text)
+        ctx.move_to(x - extents.width / 2, y)
         ctx.show_text(text)
 
     def get_engine(self):
