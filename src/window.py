@@ -515,6 +515,7 @@ class TypingWindow(Gtk.ApplicationWindow):
         builder.set_translation_domain(package.get_name())
         builder.add_from_file(os.path.join(os.path.dirname(__file__), 'menu.ui'))
         self.menu_button.set_menu_model(builder.get_object('app-menu'))
+        self.menu_button.set_can_focus(False)
         self.headerbar.pack_end(self.menu_button)
 
         action = Gio.SimpleAction.new("menu", None)
