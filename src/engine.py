@@ -371,11 +371,12 @@ class Engine:
     def is_timeup(self):
         return TIME_OVER <= self.get_duration()
 
-    # Count the number of typed characters
-    def key_press(self, event):
+    def inc_touch_count(self, event, keyboard):
+        if not self.is_practice_mode():
+            return
         if event.state & Gdk.ModifierType.MODIFIER_RESERVED_25_MASK:
             return
-        if not self.is_practice_mode():
+        if self.get_ime_mode() != 'A' and keyboard.is_ignore(event):
             return
         if event.keyval not in self.ignore:
             self.touch_count += 1

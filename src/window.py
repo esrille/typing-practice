@@ -417,10 +417,8 @@ class View(Gtk.DrawingArea):
         return True
 
     def on_key_press(self, wid, event):
-        if not event.state & Gdk.ModifierType.MODIFIER_RESERVED_25_MASK:
-            logger.info("'%s', %08x", Gdk.keyval_name(event.keyval), event.state)
-            if not self.keyboard.is_ignore(event):
-                self.engine.key_press(event)
+        logger.info("'%s', %08x", Gdk.keyval_name(event.keyval), event.state)
+        self.engine.inc_touch_count(event, self.keyboard)
         if self.engine.get_mode() == EngineMode.MENU:
             try:
                 n = (Gdk.KEY_1, Gdk.KEY_2, Gdk.KEY_3, Gdk.KEY_4, Gdk.KEY_5,
