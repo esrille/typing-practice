@@ -6,7 +6,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: esrille-typing-practice 0.1.0\n"
 "Report-Msgid-Bugs-To: https://github.com/esrille/typing-practice/issues\n"
-"POT-Creation-Date: 2020-09-14 21:28+0900\n"
+"POT-Creation-Date: 2020-09-26 17:49+0900\n"
 "PO-Revision-Date: 2020-06-03 22:58+0900\n"
 "Last-Translator: Esrille Inc. <info@esrille.com>\n"
 "Language-Team: Japanese <info@esrille.com>\n"
@@ -15,11 +15,11 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 
-#: src/application.py:79 src/window.py:66
+#: src/application.py:80 src/window.py:67
 msgid "Typing Practice"
 msgstr "タイピングの練習"
 
-#: src/application.py:84
+#: src/application.py:85
 msgid "Introduction to Typing Practice"
 msgstr "タイピングの練習の手びき"
 

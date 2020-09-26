@@ -6,9 +6,9 @@
 #, fuzzy
 msgid ""
 msgstr ""
-"Project-Id-Version: esrille-typing-practice 0.1.0\n"
+"Project-Id-Version: esrille-typing-practice 0.2.0\n"
 "Report-Msgid-Bugs-To: https://github.com/esrille/typing-practice/issues\n"
-"POT-Creation-Date: 2020-09-14 21:28+0900\n"
+"POT-Creation-Date: 2020-09-26 17:49+0900\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -17,11 +17,11 @@ msgstr ""
 "Content-Type: text/plain; charset=CHARSET\n"
 "Content-Transfer-Encoding: 8bit\n"
 
-#: src/application.py:79 src/window.py:66
+#: src/application.py:80 src/window.py:67
 msgid "Typing Practice"
 msgstr ""
 
-#: src/application.py:84
+#: src/application.py:85
 msgid "Introduction to Typing Practice"
 msgstr ""
 
