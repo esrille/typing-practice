@@ -404,6 +404,7 @@ class Engine:
                 self.reset_practice()
                 self.mode = EngineMode.RUN
                 self.filename = filename
+                self.ime_mode = 'A'
         except:
             logger.error('"%s" was not found.', filename)
 
@@ -411,7 +412,10 @@ class Engine:
         self.text = ''
         while 0 < self.repeat:
             self.text += self.ramdom_list.pop(random.randrange(0, len(self.ramdom_list)))
-            self.text += ' '
+            if self.get_ime_mode() == 'あ':
+                self.text += '　'
+            else:
+                self.text += ' '
             self.repeat -= 1
         self.text = self.text.strip()
         self.plain, self.reading = get_plain_text(self.text)
