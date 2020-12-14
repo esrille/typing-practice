@@ -12,7 +12,7 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-AC_INIT([esrille-typing-practice], [0.2.0], [https://github.com/esrille/typing-practice/issues])
+AC_INIT([esrille-typing-practice], [0.3.0], [https://github.com/esrille/typing-practice/issues])
 AM_INIT_AUTOMAKE([foreign tar-ustar])
 
 AM_GNU_GETTEXT_REQUIRE_VERSION([0.19.8])
