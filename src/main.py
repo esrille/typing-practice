@@ -1,6 +1,6 @@
 # typing-practice - Typing Practice
 #
-# Copyright (c) 2020 Esrille Inc.
+# Copyright (c) 2020, 2021 Esrille Inc.
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -31,7 +31,7 @@ import sys
 
 
 logger = logging.getLogger(__name__)
-_ = lambda a : gettext.dgettext(package.get_name(), a)
+_ = lambda a: gettext.dgettext(package.get_name(), a)
 
 
 if __name__ == '__main__':

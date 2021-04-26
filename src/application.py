@@ -1,6 +1,6 @@
 # typing-practice - Typing Practice
 #
-# Copyright (c) 2020 Esrille Inc.
+# Copyright (c) 2020, 2021 Esrille Inc.
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -28,7 +28,7 @@ import os
 
 
 logger = logging.getLogger(__name__)
-_ = lambda a : gettext.dgettext(package.get_name(), a)
+_ = lambda a: gettext.dgettext(package.get_name(), a)
 
 
 class Application(Gtk.Application):
@@ -78,7 +78,7 @@ class Application(Gtk.Application):
     def on_about(self, action, param):
         dialog = Gtk.AboutDialog(transient_for=self.window, modal=True)
         dialog.set_program_name(_("Typing Practice"))
-        dialog.set_copyright("Copyright 2020 Esrille Inc.")
+        dialog.set_copyright("Copyright 2020, 2021 Esrille Inc.")
         dialog.set_authors(["Esrille Inc."])
         dialog.set_documenters(["Esrille Inc."])
         dialog.set_website("file://" + os.path.join(package.get_datadir(), "help/index.html"))

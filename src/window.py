@@ -1,6 +1,6 @@
 # typing-practice - Typing Practice
 #
-# Copyright (c) 2020 Esrille Inc.
+# Copyright (c) 2020, 2021 Esrille Inc.
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -37,7 +37,7 @@ import os
 
 
 logger = logging.getLogger(__name__)
-_ = lambda a : gettext.dgettext(package.get_name(), a)
+_ = lambda a: gettext.dgettext(package.get_name(), a)
 
 
 WINDOW_WIDTH = 1024
@@ -181,7 +181,7 @@ class View(Gtk.DrawingArea):
 
         # Draw what is typed.
         y += LINE_HEIGHT
-        attrListPreedit = Pango.AttrList().new()
+        attr_list_preedit = Pango.AttrList().new()
         typed = get_prefix(self.engine.get_plain(), self.engine.get_typed())
         correct_length = len(typed)
         typed = hurigana.adjust_typed(typed)
@@ -193,18 +193,18 @@ class View(Gtk.DrawingArea):
         preedit = self.engine.get_preedit()
         if preedit[0]:
             formatted += '<span foreground="#0066FF">' + preedit[0] + '</span>'
-            attrListPreedit.splice(preedit[1],
-                                   len((typed + self.engine.get_typed()[correct_length:]).encode()),
-                                   len(preedit[0].encode()))
+            attr_list_preedit.splice(preedit[1],
+                                     len((typed + self.engine.get_typed()[correct_length:]).encode()),
+                                     len(preedit[0].encode()))
         layout = PangoCairo.create_layout(ctx)
         layout.set_font_description(desc)
         layout.set_width(WIDTH * Pango.SCALE)
         layout.set_spacing(PRACTICE_LINE_SPACING * Pango.SCALE)
         layout.set_markup(formatted, -1)
         if preedit[0]:
-            attrList = layout.get_attributes()
-            attrList.splice(attrListPreedit, 0, 0)
-            layout.set_attributes(attrList)
+            attr_list = layout.get_attributes()
+            attr_list.splice(attr_list_preedit, 0, 0)
+            layout.set_attributes(attr_list)
         ctx.move_to(x, y)
         PangoCairo.update_layout(ctx, layout)
         PangoCairo.show_layout(ctx, layout)
