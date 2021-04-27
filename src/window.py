@@ -163,58 +163,118 @@ class View(Gtk.DrawingArea):
 
         self._draw_hints(wid, ctx, self.engine.get_hint())
 
+    if Pango.version_check(1, 44, 0) is None:
+
+        def _draw_typed(self, ctx, layout, hurigana):
+            typed = get_prefix(self.engine.get_plain(), self.engine.get_typed())
+            correct_length = len(typed)
+            typed = hurigana.adjust_typed(typed)
+            attr_list = Pango.AttrList().new()
+
+            formatted = typed
+            so = 0
+            eo = len(formatted.encode())
+            attr = Pango.attr_foreground_new(0x0000, 0x6600, 0xcc00)
+            attr.start_index = so
+            attr.end_index = eo
+            attr_list.insert(attr)
+
+            if correct_length < len(self.engine.get_typed()):
+                typed += self.engine.get_typed()[correct_length:]
+                formatted += self.engine.get_typed()[correct_length:]
+                so = eo
+                eo = so + len(self.engine.get_typed()[correct_length:].encode())
+                attr = Pango.attr_background_new(0xff00, 0xcc00, 0xff00)
+                attr.start_index = so
+                attr.end_index = eo
+                attr_list.insert(attr)
+                attr = Pango.attr_foreground_new(0xff00, 0x0000, 0x0000)
+                attr.start_index = so
+                attr.end_index = eo
+                attr_list.insert(attr)
+
+            preedit = self.engine.get_preedit()
+            if preedit[0] and 0 < preedit[2]:
+                typed += preedit[0][:preedit[2]]
+                formatted += preedit[0][:preedit[2]]
+                so = eo
+                eo = so + len(preedit[0][:preedit[2]].encode())
+                attr = Pango.attr_foreground_new(0x0000, 0x6600, 0xff00)
+                attr.start_index = so
+                attr.end_index = eo
+                attr_list.insert(attr)
+
+                # Note with Pango 1.48, the following splice() does not work
+                # as expected. It works with Pango 1.44, though. So we will
+                # manually marge preedit attributes into attr_list:
+                #   attr_list.splice(preedit[1], so, 0)
+                attributes = preedit[1].get_attributes()
+                for i in attributes:
+                    i.start_index += so
+                    i.end_index += so
+                    attr_list.change(i)
+
+            layout.set_text(formatted, -1)
+            layout.set_attributes(attr_list)
+            PangoCairo.update_layout(ctx, layout)
+            PangoCairo.show_layout(ctx, layout)
+            return layout, typed
+
+    else:
+
+        def _draw_typed(self, ctx, layout, hurigana):
+            attr_list_preedit = Pango.AttrList().new()
+            typed = get_prefix(self.engine.get_plain(), self.engine.get_typed())
+            correct_length = len(typed)
+            typed = hurigana.adjust_typed(typed)
+            formatted = '<span foreground="#0066CC">' + typed + '</span>'
+            if correct_length < len(self.engine.get_typed()):
+                formatted += '<span foreground="#FF0000" background="#FFCCFF">' + \
+                         self.engine.get_typed()[correct_length:] + \
+                         '</span>'
+                typed += self.engine.get_typed()[correct_length:]
+            preedit = self.engine.get_preedit()
+            if preedit[0] and 0 < preedit[2]:
+                attr_list_preedit.splice(preedit[1],
+                                         len(typed.encode()),
+                                         len(preedit[0][:preedit[2]].encode()))
+                formatted += '<span foreground="#0066FF">' + preedit[0][:preedit[2]] + '</span>'
+                typed += preedit[0][:preedit[2]]
+            layout.set_markup(formatted, -1)
+            if preedit[0] and 0 < preedit[2]:
+                attr_list = layout.get_attributes()
+                attr_list.splice(attr_list_preedit, 0, 0)
+                layout.set_attributes(attr_list)
+            PangoCairo.update_layout(ctx, layout)
+            PangoCairo.show_layout(ctx, layout)
+            return layout, typed
+
     def _draw_practice(self, wid, ctx):
         ctx.select_font_face("Noto Sans Mono CJK JP", cairo.FONT_SLANT_NORMAL, cairo.FONT_WEIGHT_NORMAL)
         ctx.set_font_size(FONT_SIZE)
 
         x = MARGIN_LEFT
         y = MARGIN_TOP
+        desc = Pango.font_description_from_string(DEFAULT_FONT)
 
         # Draw text for practicing.
         hurigana = HuriganaLayout(ctx)
-        desc = Pango.font_description_from_string(DEFAULT_FONT)
         hurigana.set_font_description(desc)
         hurigana.set_width(WIDTH)
         hurigana.set_spacing(PRACTICE_LINE_SPACING)
         hurigana.set_text(self.engine.get_text())
         hurigana.draw(x, y)
 
-        # Draw what is typed.
+        # Draw what has been typed.
         y += LINE_HEIGHT
-        attr_list_preedit = Pango.AttrList().new()
-        typed = get_prefix(self.engine.get_plain(), self.engine.get_typed())
-        correct_length = len(typed)
-        typed = hurigana.adjust_typed(typed)
-        formatted = '<span foreground="#0066CC">' + typed + '</span>'
-        if correct_length < len(self.engine.get_typed()):
-            formatted += '<span foreground="#FF0000" background="#FFCCFF">' + \
-                     self.engine.get_typed()[correct_length:] + \
-                     '</span>'
-        preedit = self.engine.get_preedit()
-        if preedit[0]:
-            formatted += '<span foreground="#0066FF">' + preedit[0] + '</span>'
-            attr_list_preedit.splice(preedit[1],
-                                     len((typed + self.engine.get_typed()[correct_length:]).encode()),
-                                     len(preedit[0].encode()))
+        ctx.move_to(x, y)
         layout = PangoCairo.create_layout(ctx)
         layout.set_font_description(desc)
         layout.set_width(WIDTH * Pango.SCALE)
         layout.set_spacing(PRACTICE_LINE_SPACING * Pango.SCALE)
-        layout.set_markup(formatted, -1)
-        if preedit[0]:
-            attr_list = layout.get_attributes()
-            attr_list.splice(attr_list_preedit, 0, 0)
-            layout.set_attributes(attr_list)
-        ctx.move_to(x, y)
-        PangoCairo.update_layout(ctx, layout)
-        PangoCairo.show_layout(ctx, layout)
+        (layout, current) = self._draw_typed(ctx, layout, hurigana)
 
         # Draw caret
-        current = typed
-        if correct_length < len(self.engine.get_typed()):
-            current += self.engine.get_typed()[correct_length:]
-        if preedit[0]:
-            current += preedit[0][:preedit[2]]
         ctx.move_to(x, y)
         layout.set_text(current, -1)
         PangoCairo.update_layout(ctx, layout)
