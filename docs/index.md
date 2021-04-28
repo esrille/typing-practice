@@ -14,9 +14,9 @@
 ## 「タイピングの￹練習￺れんしゅう￻」の￹開発￺かいはつ￻
 
 　「タイピングの￹練習￺れんしゅう￻」は、オープンソースソフトウェアです。
-プログラムは￹Python￺パイソン￻でかかれています。￹行数￺ぎょうすう￻は、￹約￺やく￻2,500￹行￺ぎょう￻(v0.2.0)です。
+プログラムは￹Python￺パイソン￻でかかれています。
 メインのリポジトリは、[GitHub](https://github.com/esrille/typing-practice)にあります。
 　「タイピングの￹練習￺れんしゅう￻」は「[ひらがなIME](https://github.com/esrille/ibus-hiragana)」といっしょにつかうように￹設計￺せっけい￻されています。
 
 <hr>
-<br><small>Copyright 2020 Esrille Inc. </small>
+<br><small>Copyright 2020, 2021 Esrille Inc. </small>
