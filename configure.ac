@@ -1,4 +1,4 @@
-# Copyright (c) 2020, 2021 Esrille Inc.
+# Copyright (c) 2020-2022 Esrille Inc.
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -12,7 +12,7 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-AC_INIT([esrille-typing-practice], [0.3.1], [https://github.com/esrille/typing-practice/issues])
+AC_INIT([esrille-typing-practice], [0.3.2], [https://github.com/esrille/typing-practice/issues])
 AC_CONFIG_AUX_DIR([.])
 AM_INIT_AUTOMAKE([foreign tar-ustar])
 
