@@ -1,4 +1,4 @@
-# Copyright (c) 2020 Esrille Inc.
+# Copyright (c) 2020-2022 Esrille Inc.
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -22,6 +22,7 @@ SUBDIRS = \
 
 EXTRA_DIST = \
 	debian/changelog \
+	debian/changelog.in \
 	debian/compat \
 	debian/control \
 	debian/copyright \
@@ -36,6 +37,16 @@ EXTRA_DIST = \
 	README.md \
 	README.txt \
 	$(NULL)
+
+.PHONY: debian/changelog
+debian/changelog:
+	$(AM_V_GEN) \
+	( \
+		date=`date -R`; \
+		version=@VERSION@; \
+		s=`cat debian/changelog.in`; \
+		eval "echo \"$${s}\""; \
+	) > $@
 
 DISTCLEANFILES = \
 	po/stamp-it \
