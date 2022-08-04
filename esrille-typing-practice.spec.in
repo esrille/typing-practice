@@ -9,6 +9,7 @@ Requires:   ibus-hiragana >= 0.14.2
 Requires:   python3
 Requires:   python3-dbus
 Requires:   python3-pyxdg
+Requires:   yelp
 BuildRequires: gettext-devel
 BuildRequires: libtool
 BuildRequires: pkgconfig

@@ -1,6 +1,6 @@
 # typing-practice - Typing Practice
 #
-# Copyright (c) 2020, 2021 Esrille Inc.
+# Copyright (c) 2020-2022 Esrille Inc.
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -25,6 +25,7 @@ from window import TypingWindow
 import gettext
 import logging
 import os
+import subprocess
 
 
 logger = logging.getLogger(__name__)
@@ -78,7 +79,7 @@ class Application(Gtk.Application):
     def on_about(self, action, param):
         dialog = Gtk.AboutDialog(transient_for=self.window, modal=True)
         dialog.set_program_name(_("Typing Practice"))
-        dialog.set_copyright("Copyright 2020, 2021 Esrille Inc.")
+        dialog.set_copyright("Copyright 2020-2022 Esrille Inc.")
         dialog.set_authors(["Esrille Inc."])
         dialog.set_documenters(["Esrille Inc."])
         dialog.set_website("file://" + os.path.join(package.get_datadir(), "help/index.html"))
@@ -95,11 +96,10 @@ class Application(Gtk.Application):
         dialog.destroy()
 
     def on_help(self, *args):
-        url = "file://" + os.path.join(package.get_datadir(), "help/index.html")
-        Gtk.show_uri_on_window(self.window, url, Gdk.CURRENT_TIME)
-        if self.window:
-            # see https://gitlab.gnome.org/GNOME/gtk/-/issues/1211
-            self.window.get_window().set_cursor(self.cursor)
+        # Use yelp to open local HTMLs.
+        # cf. https://gitlab.gnome.org/GNOME/yelp/-/merge_requests/24
+        url = 'file://' + os.path.join(package.get_datadir(), 'help/index.html')
+        subprocess.Popen(['yelp', url])
 
     def on_quit(self, *args):
         if self.window:
