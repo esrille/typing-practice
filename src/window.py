@@ -1,6 +1,6 @@
 # typing-practice - Typing Practice
 #
-# Copyright (c) 2020, 2021 Esrille Inc.
+# Copyright (c) 2020-2022 Esrille Inc.
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -355,9 +355,7 @@ class View(Gtk.DrawingArea):
         hurigana.set_text(text)
         hurigana.draw(x, y)
 
-        hint = self.engine.get_hint()
-        if not hint:
-            hint = "<kbd>Enter</kbd> つぎにすすむ\n<kbd>Esc</kbd> メニューにもどる"
+        hint = "<kbd>Enter</kbd> つぎにすすむ\n<kbd>Backspace</kbd> もういちど\n<kbd>Esc</kbd> メニューにもどる"
         self._draw_hints(wid, ctx, hint)
 
     def _draw_stats(self, wid, ctx: cairo.Context):

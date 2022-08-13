@@ -1,6 +1,6 @@
 # typing-practice - Typing Practice
 #
-# Copyright (c) 2020 Esrille Inc.
+# Copyright (c) 2020-2022 Esrille Inc.
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -219,7 +219,10 @@ class Engine:
                 self.start_test()
 
     def backspace(self):
-        if self.is_practice_mode() and self.typed:
+        if self.mode == EngineMode.SCORE:
+            self.lineno -= 2
+            self.mode = EngineMode.RUN
+        elif self.is_practice_mode() and self.typed:
             self.typed = self.typed[:-1]
             if self.is_empty():
                 self.reset_practice()
