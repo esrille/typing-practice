@@ -2,7 +2,7 @@
 :zenkaku
 :text
 １２３４５　１２３４５　６７８９０　６７８９０
-:ime_mode A
+:ime_mode あ
 :keyboard
 :start
 :show_score

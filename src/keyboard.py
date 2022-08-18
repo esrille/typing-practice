@@ -1,6 +1,6 @@
 # typing-practice - Typing Practice
 #
-# Copyright (c) 2020 Esrille Inc.
+# Copyright (c) 2020-2022 Esrille Inc.
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -170,10 +170,8 @@ class Keyboard:
                             s = ''
                         elif s in ime_layout['Shift']:
                             s = ime_layout['Shift'][s]
-                        if n in self.kogaki:
-                            self.kogaki = self.kogaki.replace(n, '')
-                        if s in self.kogaki:
-                            self.kogaki = self.kogaki.replace(s, '')
+                        self.kogaki = self.kogaki.replace(n, '')
+                        self.kogaki = self.kogaki.replace(s, '')
                         row.append((c[0], n, s))
                         index += 1
                     self.kana_layout.append(row)
@@ -209,6 +207,8 @@ class Keyboard:
                             n = ''
                         if space == keyval:
                             n = ' '
+                        if ime_layout['Roomazi'].get(n, '') == '\u3000':
+                            n = ' '
                         row.append((c[0], n, s))
                         index += 1
                     layout.append(row)
@@ -224,8 +224,7 @@ class Keyboard:
         elif self.is_roomazi():
             pair = self.roomazi.get_roomazi(next)
             hint = pair[1]
-            if '\u3000' in hint:
-                hint = hint.replace('\u3000', ' ')
+            hint = hint.replace('\u3000', ' ')
             self.draw_with_hint(ctx, x, y, self.roomazi_layout, hint)
         else:
             pair = self.get_kana(next)
