@@ -1,8 +1,14 @@
 esrille-typing-practice (${version}) unstable; urgency=low
 
-  * See https://github.com/esrille/typing-practice/releases/tag/v${version}
+  * See https://github.com/esrille/typing-practice/releases/tag/v${source_version}
 
  -- Esrille Inc. <info@esrille.com>  ${date}
+
+esrille-typing-practice (0.3.2) unstable; urgency=low
+
+  * See https://github.com/esrille/typing-practice/releases/tag/v0.3.2
+
+ -- Esrille Inc. <info@esrille.com>  Thu, 18 Aug 2022 12:56:49 +0900
 
 esrille-typing-practice (0.3.1) unstable; urgency=low
 

@@ -1,4 +1,4 @@
-# Copyright (c) 2020-2022 Esrille Inc.
+# Copyright (c) 2020-2024 Esrille Inc.
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -12,12 +12,17 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-AC_INIT([esrille-typing-practice], [0.3.2], [https://github.com/esrille/typing-practice/issues])
+m4_define([typing_practice_version], [0.3.3~rc1])
+AC_INIT([esrille-typing-practice], [typing_practice_version], [https://github.com/esrille/typing-practice/issues])
 AC_CONFIG_AUX_DIR([.])
 AM_INIT_AUTOMAKE([foreign tar-ustar])
 
-AM_GNU_GETTEXT_REQUIRE_VERSION([0.19.8])
 AM_GNU_GETTEXT([external])
+AM_GNU_GETTEXT_REQUIRE_VERSION([0.19.8])
+AM_GNU_GETTEXT_VERSION([0.19.8])
+
+# Check Python
+AM_PATH_PYTHON([3.8])
 
 # define GETTEXT_* variables
 GETTEXT_PACKAGE=AC_PACKAGE_NAME
@@ -27,8 +32,11 @@ AC_DEFINE_UNQUOTED(
     [Define to the read-only architecture-independent data directory.]
 )
 
-# Check Python
-AM_PATH_PYTHON([3.7])
+# For GitHub
+m4_define(typing_practice_source_version,
+  [m4_esyscmd(echo -n typing_practice_version | tr '~' '-')])
+SOURCE_VERSION="typing_practice_source_version"
+AC_SUBST(SOURCE_VERSION)
 
 # OUTPUT files
 AC_CONFIG_FILES(
@@ -40,7 +48,6 @@ src/Makefile
 src/package.py.in
 src/esrille-typing-practice.in
 Makefile
-esrille-typing-practice.spec
 )
 
 AC_OUTPUT

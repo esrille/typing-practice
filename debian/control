@@ -2,7 +2,12 @@ Source: esrille-typing-practice
 Section: utils
 Priority: optional
 Maintainer: Esrille Inc. <info@esrille.com>
-Build-Depends: debhelper (>=11),dh-python,autotools-dev,autopoint,python3-dev,pkg-config
+Build-Depends:
+ autopoint,
+ debhelper (>=11),
+ dh-python,
+ pkg-config,
+ python3-dev
 Standards-Version: 3.9.6
 Homepage: https://github.com/esrille/typing-practice
 Vcs-Git: https://github.com/esrille/typing-practice.git
@@ -10,17 +15,18 @@ Vcs-Browser: https://github.com/esrille/typing-practice
 
 Package: esrille-typing-practice
 Architecture: all
-Depends: fonts-noto-cjk,
-         gir1.2-glib-2.0,
-         gir1.2-gtk-3.0,
-         gir1.2-pango-1.0,
-         ibus-hiragana (>= 0.14.2),
-         python3,
-         python3-cairo,
-         python3-gi,
-         python3-gi-cairo,
-         yelp,
-         ${gir:Depends},
-         ${misc:Depends},
-         ${python3:Depends}
+Depends:
+ fonts-noto-cjk,
+ gir1.2-glib-2.0,
+ gir1.2-gtk-3.0,
+ gir1.2-pango-1.0,
+ ibus-hiragana (>= 0.14.2),
+ python3,
+ python3-cairo,
+ python3-gi,
+ python3-gi-cairo,
+ yelp,
+ ${gir:Depends},
+ ${misc:Depends},
+ ${python3:Depends}
 Description: Typing Practice

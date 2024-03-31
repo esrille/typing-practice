@@ -1,10 +1,10 @@
-Name:       @PACKAGE_NAME@
-Version:    @PACKAGE_VERSION@
-Release:    1%{?dist}
+Name:       esrille-typing-practice
+Version:    ${version}
+Release:    %autorelease
 Summary:    Typing Practice
-License:    ASL 2.0
-URL:        https://github.com/esrille/%{name}
-Source0:    https://github.com/esrille/%{name}/releases/download/v%{version}/%{name}-%{version}.tar.gz
+License:    Apache-2.0
+URL:        https://github.com/esrille/typing-practice
+Source0:    https://github.com/esrille/typing-practice/releases/download/v${source_version}/%{name}-${source_version}.tar.gz
 Requires:   ibus-hiragana >= 0.14.2
 Requires:   python3
 Requires:   python3-dbus
@@ -25,16 +25,13 @@ Typing Practice
 %setup -q
 
 %build
-%configure --disable-static
-make %{?_smp_mflags}
+autoreconf -fi -v
+%configure
+%make_build
 
 %install
-rm -rf $RPM_BUILD_ROOT
-make install DESTDIR=${RPM_BUILD_ROOT} install
+%make_install
 %find_lang %{name}
-
-%clean
-rm -rf $RPM_BUILD_ROOT
 
 %files -f %{name}.lang
 %defattr(-,root,root,-)
@@ -46,3 +43,5 @@ rm -rf $RPM_BUILD_ROOT
 %{_bindir}/esrille-typing-practice
 
 %changelog
+* ${date} Esrille Inc. <info@esrille.com> - ${version}-1
+- See https://github.com/esrille/typing-practice/releases/tag/v${source_version}

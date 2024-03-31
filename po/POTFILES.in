@@ -1,6 +1,7 @@
 src/application.py
 src/chart.py
 src/engine.py
+src/esrille-typing-practice.desktop.in
 src/hurigana.py
 src/ime.py
 src/keyboard.py

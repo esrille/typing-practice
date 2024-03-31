@@ -1,4 +1,4 @@
-# Copyright (c) 2020-2022 Esrille Inc.
+# Copyright (c) 2020-2024 Esrille Inc.
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -38,19 +38,29 @@ EXTRA_DIST = \
 	README.txt \
 	$(NULL)
 
-.PHONY: debian/changelog
+DISTCLEANFILES = \
+	po/stamp-it \
+	$(NULL)
+
 debian/changelog:
 	$(AM_V_GEN) \
 	( \
 		date=`date -R`; \
 		version=@VERSION@; \
+		source_version=@SOURCE_VERSION@; \
 		s=`cat debian/changelog.in`; \
 		eval "echo \"$${s}\""; \
 	) > $@
 
-DISTCLEANFILES = \
-	po/stamp-it \
-	$(NULL)
+@PACKAGE_NAME@.spec:
+	$(AM_V_GEN) \
+	( \
+		date=`date '+%a %b %d %Y'`; \
+		version=@VERSION@; \
+		source_version=@SOURCE_VERSION@; \
+		s=`cat @PACKAGE_NAME@.spec.in`; \
+		eval "echo \"$${s}\""; \
+	) > $@
 
 uninstall-hook:
 	-rmdir $(pkgdatadir)

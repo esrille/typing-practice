@@ -1,4 +1,4 @@
-# Copyright (c) 2020 Esrille Inc.
+# Copyright (c) 2020-2024 Esrille Inc.
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -68,13 +68,7 @@ esrille-typing-practice: esrille-typing-practice.in
 	) > $@
 
 esrille-typing-practice.desktop: esrille-typing-practice.desktop.in
-	$(AM_V_GEN) \
-	( \
-		libexecdir=${libexecdir}; \
-		pkgdatadir=${pkgdatadir}; \
-		s=`cat $<`; \
-		eval "echo \"$${s}\""; \
-	) > $@
+	$(AM_V_GEN)$(MSGFMT) --desktop --template $< -d $(top_srcdir)/po -o $@
 
 uninstall-hook:
 	-rmdir $(typing_practicedir)/__pycache__
